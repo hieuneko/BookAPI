@@ -2,7 +2,7 @@
 
 ## Build status
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/hieuneko/BookAPI/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/hieuneko/BookAPI/tree/main)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/hieuneko/BookStoreApi/tree/base.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/hieuneko/BookStoreApi/tree/base)
 
 ## Test coverage
 
