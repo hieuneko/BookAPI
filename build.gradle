@@ -15,7 +15,7 @@ test {
 }
 
 flyway {
-    url = 'jdbc:postgresql://localhost:5432/bookapi?searchpath=public'
+    url = 'jdbc:postgresql://localhost:5432/bookstore?searchpath=public'
     user = 'postgres'
     password = 'postgres'
     locations = ['classpath:db/migration/COMMON', 'classpath:db/migration/DEV']
