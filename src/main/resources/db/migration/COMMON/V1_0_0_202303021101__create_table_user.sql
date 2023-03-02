@@ -13,6 +13,6 @@ CREATE TABLE users
     FOREIGN KEY (role_id) REFERENCES roles(id)
 );
 
-INSERT INTO users(username, password, firstname, lastname, enabled, avatar, role_id)
-VALUES ('admin', '123456', 'hieu', 'pham', true, null , (SELECT id FROM roles WHERE name = 'Admin'))
+INSERT INTO users(username, password, firstName, lastName, enabled, avatar, role_id)
+VALUES ('admin', 'OHjcWdaFE35A7kBJBmVyjlNfaJ8lWgHI2zaUR4tjGhI=', 'hieu', 'pham', true, null , (SELECT id FROM roles WHERE name = 'ADMIN'))
 
