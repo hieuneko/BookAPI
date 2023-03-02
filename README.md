@@ -6,7 +6,7 @@
 
 ## Test coverage
 
-[![codecov](https://codecov.io/gh/hieuneko/BookAPI/branch/main/graph/badge.svg?token=hiV6n7np8n)](https://codecov.io/gh/hieuneko/BookAPI)
+[![codecov](https://codecov.io/gh/hieuneko/BookStoreApi/branch/main/graph/badge.svg?token=hiV6n7np8n)](https://codecov.io/gh/hieuneko/BookStoreApi)
 
 ---
 
