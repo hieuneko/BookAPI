@@ -1,23 +1,68 @@
 package com.phamhieu.bookapi.api.book;
 
+import com.phamhieu.bookapi.domain.book.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.awt.print.Book;
-import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
+
+import static com.phamhieu.bookapi.api.book.BookDTOMapper.*;
+
 
 @RestController
 @RequestMapping("/api/v1/books")
 @RequiredArgsConstructor
 public class BookController {
 
-    @Operation(summary = "Find all books in database")
+    private final BookService bookService;
+
+    @Operation(summary = "find all books")
     @GetMapping
-    public List<Book> findAll(){
-        return Collections.emptyList();
+    public List<BookDTO> findAllBook() {
+        return toBookDTOs(bookService.findAllBook());
+    }
+
+    @Operation(summary = "find book by id")
+    @GetMapping("{bookId}")
+    public BookDTO findBookById(@PathVariable(name = "bookId") UUID bookId) {
+        return toBookDTO(bookService.findBookById(bookId));
+    }
+
+    @Operation(summary = "find book by title")
+    @GetMapping("title/{bookTitle}")
+    public List<BookDTO> findBookByTitle(@PathVariable(name = "bookTitle") String title) {
+        return toBookDTOs(bookService.findBookByTitle(title));
+    }
+
+    @Operation(summary = "find book by author")
+    @GetMapping("author/{author}")
+    public List<BookDTO> findBookByAuthor(@PathVariable(name = "author") String author) {
+        return toBookDTOs(bookService.findBookByAuthor(author));
+    }
+
+    @Operation(summary = "Add new book")
+    @PostMapping
+    public BookDTO addUser(@RequestBody BookDTO bookDTO) {
+        return toBookDTO(bookService.addBook(toBook(bookDTO)));
+    }
+
+    @Operation(summary = "Update book information")
+    @PatchMapping("{bookId}")
+    public BookDTO updateBook(@RequestBody BookDTO bookDTO, @PathVariable(name = "bookId") UUID bookId) {
+        return toBookDTO(bookService.updateBook(toBook(bookDTO), bookId));
+    }
+
+    @Operation(summary = "Delete book by id")
+    @DeleteMapping("{bookId}")
+    public String deleteBook(@PathVariable(name = "bookId") UUID bookId) {
+        try{
+            bookService.deleteBook(bookId);
+            return "success";
+        }
+        catch (Exception e) {
+            return "false";
+        }
     }
 }
