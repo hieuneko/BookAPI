@@ -1,4 +1,4 @@
-package com.phamhieu.bookapi.api.user;
+package com.phamhieu.bookapi.domain.user;
 
 import com.phamhieu.bookapi.domain.user.User;
 import lombok.experimental.UtilityClass;

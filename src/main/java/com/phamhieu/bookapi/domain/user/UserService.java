@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.phamhieu.bookapi.domain.user.UserError.*;
-import static com.phamhieu.bookapi.api.user.UserValidation.*;
+import static com.phamhieu.bookapi.domain.user.UserValidation.*;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
