@@ -11,18 +11,18 @@ import java.util.function.Supplier;
 public class UserError {
 
     public static Supplier<NotFoundException> supplyUserNotFoundById(final UUID id) {
-        return () -> new NotFoundException("User has id:  %s couldn't be found", id);
+        return () -> new NotFoundException("User has id: %s couldn't be found", id);
     }
 
-    public static Supplier<NotFoundException> supplyUserNotFoundByName(final String name) {
-        return () -> new NotFoundException("User has name:  %s couldn't be found", name);
+    public static Supplier<BadRequestException> supplyPasswordLengthNotEnough() {
+        return () -> new BadRequestException("Password's length must at least 6 characters");
     }
 
     public static Supplier<BadRequestException> supplyUserExist(final String username) {
-        return () -> new BadRequestException("Username:  %s already exist", username);
+        return () -> new BadRequestException("Username: %s already exist", username);
     }
 
-    public static Supplier<BadRequestException> supplyNotEnough() {
-        return () -> new BadRequestException("Information isn't not enough");
+    public static Supplier<BadRequestException> supplyNotEnoughInformation(final String inputInformation) {
+        return () -> new BadRequestException("Information isn't not enough, " + inputInformation + " must required");
     }
 }

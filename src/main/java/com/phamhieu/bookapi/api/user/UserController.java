@@ -19,45 +19,39 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "find all user")
+    @Operation(summary = "Find all users")
     @GetMapping
-    public List<UserDTOResponse> findAll() {
+    public List<UserResponseDTO> findAll() {
         return toUserDTOs(userService.findAll());
     }
 
-    @Operation(summary = "find user by id")
+    @Operation(summary = "Find user by id")
     @GetMapping("{userId}")
-    public UserDTOResponse findUserById(@PathVariable(name = "userId") UUID userId) {
-        return toUserDTOResponse(userService.findUserById(userId));
+    public UserResponseDTO findUserById(@PathVariable UUID userId) {
+        return toUserResponseDTO(userService.findById(userId));
     }
 
-    @Operation(summary = "find user by name")
-    @GetMapping("search/{userName}")
-    public List<UserDTOResponse> findUserByNameContain(@PathVariable(name = "userName") String userName) {
-        return toUserDTOs(userService.findUserByName(userName));
+    @Operation(summary = "Find user by name")
+    @GetMapping("search")
+    public List<UserResponseDTO> find(final @RequestParam String name) {
+        return toUserDTOs(userService.find(name));
     }
 
     @Operation(summary = "Add new user")
     @PostMapping
-    public UserDTOResponse addUser(@RequestBody UserDTORequest userDTORequest) throws NoSuchAlgorithmException {
-        return toUserDTOResponse(userService.addUser(toUser(userDTORequest)));
+    public UserResponseDTO add(@RequestBody UserRequestDTO userRequestDTO) throws NoSuchAlgorithmException {
+        return toUserResponseDTO(userService.create(toUser(userRequestDTO)));
     }
 
     @Operation(summary = "Update user information")
     @PutMapping("{userId}")
-    public UserDTOResponse updateUser(@RequestBody UserDTORequest userDTORequest, @PathVariable(name = "userId") UUID userId) throws NoSuchAlgorithmException {
-        return toUserDTOResponse(userService.updateUser(toUser(userDTORequest), userId));
+    public UserResponseDTO update(@RequestBody UserRequestDTO userRequestDTO, @PathVariable(name = "userId") UUID userId) throws NoSuchAlgorithmException {
+        return toUserResponseDTO(userService.update(userId, toUser(userRequestDTO)));
     }
 
     @Operation(summary = "Delete user by id")
     @DeleteMapping("{userId}")
-    public String deleteUser(@PathVariable(name = "userId") UUID userId) {
-        try{
-            userService.deleteUser(userId);
-            return "success";
-        }
-        catch (Exception e) {
-            return "false";
-        }
+    public void deleteUser(@PathVariable(name = "userId") UUID userId) {
+        userService.delete(userId);
     }
 }

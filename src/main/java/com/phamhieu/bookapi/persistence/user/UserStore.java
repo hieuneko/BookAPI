@@ -21,7 +21,7 @@ public class UserStore {
         return toUsers(toList(repository.findAll()));
     }
 
-    public Optional<User> findUserById(final UUID userId) {
+    public Optional<User> findById(final UUID userId) {
         return repository.findById(userId).map(UserEntityMapper::toUser);
     }
 
@@ -33,15 +33,15 @@ public class UserStore {
        return repository.findByUsername(user).map(UserEntityMapper::toUser);
     }
 
-    public List<User> findByNameContain(final String name) {
-        return toUsers(repository.findByUsernameOrFirstnameOrLastname(name, name, name));
+    public List<User> find(final String name) {
+        return toUsers(repository.findByUsernameOrFirstNameOrLastName(name, name, name));
     }
 
-    public User updateUser(final User user) {
+    public User update(final User user) {
         return toUser(repository.save(toUserEntity(user)));
     }
 
-    public void deleteUser(final UUID userId) {
+    public void delete(final UUID userId) {
         repository.deleteById(userId);
     }
 }

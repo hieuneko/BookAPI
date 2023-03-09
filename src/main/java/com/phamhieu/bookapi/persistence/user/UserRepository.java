@@ -12,5 +12,5 @@ import java.util.UUID;
 public interface UserRepository extends CrudRepository<UserEntity, UUID> {
     Optional<UserEntity> findByUsername(final String username);
 
-    List<UserEntity> findByUsernameOrFirstnameOrLastname(final String username, final String firstname, final String lastname);
+    List<UserEntity> findByUsernameOrFirstNameOrLastName(final String username, final String firstName, final String lastName);
 }

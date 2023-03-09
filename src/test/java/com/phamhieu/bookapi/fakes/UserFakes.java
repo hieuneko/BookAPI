@@ -1,6 +1,6 @@
 package com.phamhieu.bookapi.fakes;
 
-import com.phamhieu.bookapi.api.user.UserDTORequest;
+import com.phamhieu.bookapi.api.user.UserRequestDTO;
 import com.phamhieu.bookapi.domain.user.User;
 import com.phamhieu.bookapi.persistence.user.UserEntity;
 import lombok.experimental.UtilityClass;
@@ -19,8 +19,8 @@ public class UserFakes {
                 .id(randomUUID())
                 .username(randomAlphabetic(3, 10))
                 .password(randomAlphabetic(3, 10))
-                .firstname(randomAlphabetic(3, 10))
-                .lastname(randomAlphabetic(3, 10))
+                .firstName(randomAlphabetic(3, 10))
+                .lastName(randomAlphabetic(3, 10))
                 .avatar(randomAlphabetic(3, 10))
                 .enabled(Boolean.TRUE)
                 .roleId(randomUUID())
@@ -38,21 +38,21 @@ public class UserFakes {
                 .id(randomUUID())
                 .username(randomAlphabetic(3, 10))
                 .password(randomAlphabetic(3, 10))
-                .firstname(randomAlphabetic(3, 10))
-                .lastname(randomAlphabetic(3, 10))
+                .firstName(randomAlphabetic(3, 10))
+                .lastName(randomAlphabetic(3, 10))
                 .avatar(randomAlphabetic(3, 10))
                 .enabled(Boolean.TRUE)
                 .roleId(randomUUID())
                 .build();
     }
 
-    public static UserDTORequest buildUserDTORequest() {
-        return UserDTORequest.builder()
+    public static UserRequestDTO buildUserDTORequest() {
+        return UserRequestDTO.builder()
                 .id(randomUUID())
                 .username(randomAlphabetic(3, 10))
                 .password(randomAlphabetic(3, 10))
-                .firstname(randomAlphabetic(3, 10))
-                .lastname(randomAlphabetic(3, 10))
+                .firstName(randomAlphabetic(3, 10))
+                .lastName(randomAlphabetic(3, 10))
                 .avatar(randomAlphabetic(3, 10))
                 .enabled(Boolean.TRUE)
                 .roleId(randomUUID())

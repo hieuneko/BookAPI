@@ -43,8 +43,8 @@ class UserServiceTest {
         assertEquals(expected.get(0).getId(), actual.get(0).getId());
         assertEquals(expected.get(0).getUsername(), actual.get(0).getUsername());
         assertEquals(expected.get(0).getPassword(), actual.get(0).getPassword());
-        assertEquals(expected.get(0).getFirstname(), actual.get(0).getFirstname());
-        assertEquals(expected.get(0).getLastname(), actual.get(0).getLastname());
+        assertEquals(expected.get(0).getFirstName(), actual.get(0).getFirstName());
+        assertEquals(expected.get(0).getLastName(), actual.get(0).getLastName());
         assertEquals(expected.get(0).isEnabled(), actual.get(0).isEnabled());
         assertEquals(expected.get(0).getAvatar(), actual.get(0).getAvatar());
         assertEquals(expected.get(0).getRoleId(), actual.get(0).getRoleId());
@@ -55,65 +55,66 @@ class UserServiceTest {
     @Test
     void shouldFindUserById_OK() {
         final var expected = buildUser();
-        when(userStore.findUserById(expected.getId()))
+        when(userStore.findById(expected.getId()))
                 .thenReturn(Optional.of(expected));
 
-        assertEquals(expected, userService.findUserById(expected.getId()));
-        verify(userStore).findUserById(expected.getId());
+        assertEquals(expected, userService.findById(expected.getId()));
+        verify(userStore).findById(expected.getId());
     }
 
     @Test
     void shouFindUserById_Throw() {
         final var id = randomUUID();
-        when(userStore.findUserById(id))
+        when(userStore.findById(id))
                 .thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> userService.findUserById(id));
-        verify(userStore).findUserById(id);
+        assertThrows(NotFoundException.class, () -> userService.findById(id));
+        verify(userStore).findById(id);
     }
 
     @Test
-    void shouldFindUserByNameContain_OK() {
+    void shouldFind_OK() {
         final var user = buildUser();
         final var expected = buildUsers();
 
-        when(userStore.findByNameContain(anyString())).thenReturn(expected);
+        when(userStore.find(anyString())).thenReturn(expected);
 
-        final var actual = userService.findUserByName(user.getUsername());
+        final var actual = userService.find(user.getUsername());
 
         assertEquals(expected.size(), actual.size());
         assertEquals(expected.get(0).getId(), actual.get(0).getId());
         assertEquals(expected.get(0).getUsername(), actual.get(0).getUsername());
-        assertEquals(expected.get(0).getFirstname(), actual.get(0).getFirstname());
-        assertEquals(expected.get(0).getLastname(), actual.get(0).getLastname());
+        assertEquals(expected.get(0).getFirstName(), actual.get(0).getFirstName());
+        assertEquals(expected.get(0).getLastName(), actual.get(0).getLastName());
         assertEquals(expected.get(0).isEnabled(), actual.get(0).isEnabled());
         assertEquals(expected.get(0).getRoleId(), actual.get(0).getRoleId());
         assertEquals(expected.get(0).getAvatar(), actual.get(0).getAvatar());
     }
 
     @Test
-    void shouldFindByUsernameOrFirstNameOrLastName_Thrown() {
+    void shouldFind_Thrown() {
         final var name = randomAlphabetic(3, 10);
 
-        when(userStore.findByNameContain(name)).thenReturn(Collections.emptyList());
+        when(userStore.find(name)).thenReturn(Collections.emptyList());
 
-        assertThrows(NotFoundException.class, () -> userService.findUserByName(name));
-        verify(userStore).findByNameContain(name);
+        assertTrue(userService.find(name).isEmpty());
+        verify(userStore).find(name);
     }
 
     @Test
-    void shouldAddUser_OK() throws NoSuchAlgorithmException {
+    void shouldCreate_OK() throws NoSuchAlgorithmException {
         final var user = buildUser();
+        user.setPassword(randomAlphabetic(6, 10));
 
         when(userStore.addUser(any())).thenReturn(user);
 
-        final var actual = userService.addUser(user);
+        final var actual = userService.create(user);
 
         assertEquals(user.getId(), actual.getId());
         assertEquals(user.getUsername(), actual.getUsername());
         assertEquals(user.getPassword(), actual.getPassword());
-        assertEquals(user.getFirstname(), actual.getFirstname());
-        assertEquals(user.getLastname(), actual.getLastname());
+        assertEquals(user.getFirstName(), actual.getFirstName());
+        assertEquals(user.getLastName(), actual.getLastName());
         assertEquals(user.isEnabled(), actual.isEnabled());
         assertEquals(user.getAvatar(), actual.getAvatar());
         assertEquals(user.getRoleId(), actual.getRoleId());
@@ -122,82 +123,98 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldAddUser_Throw() {
+    void shouldCreate_ThrowBadRequest() {
         final var expected = buildUser();
         expected.setPassword(null);
 
-        assertThrows(BadRequestException.class, () -> userService.addUser(expected));
+        assertThrows(BadRequestException.class, () -> userService.create(expected));
     }
 
     @Test
-    void shouldAddUser_Exist() {
-        final var expected = buildUser();
+    void shouldCreate_Exist() {
+        final var user = buildUser();
 
-        when(userStore.findByUsername(expected.getUsername())).thenReturn(Optional.of(expected));
+        when(userStore.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
 
-        assertThrows(BadRequestException.class, () -> userService.addUser(expected));
-        verify(userStore).findByUsername(expected.getUsername());
+        assertThrows(BadRequestException.class, () -> userService.create(user));
+        verify(userStore).findByUsername(user.getUsername());
     }
 
     @Test
-    void shouldUpdateUser_OK() throws NoSuchAlgorithmException {
+    void shouldUpdate_OK() throws NoSuchAlgorithmException {
         final var user = buildUser();
         final var updatedUser = buildUser();
         updatedUser.setId(user.getId());
-        updatedUser.setRoleId(user.getRoleId());
+        updatedUser.setPassword(randomAlphabetic(6, 10));
 
-        when(userStore.findUserById((user.getId()))).thenReturn(Optional.of(user));
-        when(userStore.updateUser(user)).thenReturn(user);
+        when(userStore.findById((user.getId()))).thenReturn(Optional.of(user));
+        when(userStore.update(user)).thenReturn(user);
 
-        final var expected = userService.updateUser(updatedUser, user.getId());
+        final var expected = userService.update(user.getId(), updatedUser);
 
         assertEquals(expected.getId().toString(), updatedUser.getId().toString());
         assertEquals(expected.getUsername(), updatedUser.getUsername());
-        assertEquals(expected.getFirstname(), updatedUser.getFirstname());
-        assertEquals(expected.getLastname(), updatedUser.getLastname());
+        assertEquals(expected.getFirstName(), updatedUser.getFirstName());
+        assertEquals(expected.getLastName(), updatedUser.getLastName());
         assertEquals(expected.getAvatar(), updatedUser.getAvatar());
         assertEquals(expected.getRoleId().toString(), updatedUser.getRoleId().toString());
         assertEquals(expected.isEnabled(), updatedUser.isEnabled());
 
-        verify(userStore).updateUser(user);
+        verify(userStore).update(user);
     }
 
     @Test
-    void shouldUpdateUser_Thrown() {
+    void shouldUpdate_ThrownPasswordLengthException() {
         final var user = buildUser();
-        final var updatedUser = buildUser();
-        updatedUser.setPassword(null);
+        final var userUpdate = buildUser();
+        userUpdate.setPassword(randomAlphabetic(1, 5));
 
-        assertThrows(BadRequestException.class, () -> userService.updateUser(updatedUser, user.getId()));
+        when(userStore.findById(user.getId())).thenReturn(Optional.of(user));
+
+        assertThrows(BadRequestException.class, () -> userService.update(user.getId(), userUpdate));
+
+        verify(userStore).findById(user.getId());
     }
 
     @Test
-    void shouldUpdateUser_NotFound() {
+    void shouldUpdate_NotFound() {
         final var updatedUser = buildUser();
         final var id = randomUUID();
 
-        when(userStore.findUserById(id)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> userService.update(id, updatedUser));
+        verify(userStore).findById(id);
+    }
 
-        assertThrows(NotFoundException.class, () -> userService.updateUser(updatedUser, id));
-        verify(userStore).findUserById(id);
+    @Test
+    void shouldUpdate_UsernameExits() {
+        final var userUpdate = buildUser();
+        final var userExist = buildUser();
+        final var userCurrent = buildUser();
+        userUpdate.setUsername(userExist.getUsername());
+
+        when(userStore.findById(userCurrent.getId())).thenReturn(Optional.of(userCurrent));
+        when(userStore.findByUsername(userUpdate.getUsername())).thenReturn(Optional.of(userUpdate));
+
+        assertThrows(BadRequestException.class, () -> userService.update(userCurrent.getId(), userUpdate));
+        verify(userStore, never()).update(userUpdate);
     }
 
     @Test
     void shouldDeleteById_Ok() {
         final var user = buildUser();
 
-        userService.deleteUser(user.getId());
-        verify(userStore).deleteUser(user.getId());
+        userService.delete(user.getId());
+        verify(userStore).delete(user.getId());
     }
 
     @Test
     void shouldDeleteById_NotFound() {
         final var id = randomUUID();
 
-        when(userStore.findUserById(id)).thenReturn(Optional.empty());
+        when(userStore.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> userService.findUserById(id));
-        verify(userStore).findUserById(id);
+        assertThrows(NotFoundException.class, () -> userService.findById(id));
+        verify(userStore).findById(id);
     }
 
 }

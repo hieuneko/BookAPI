@@ -13,6 +13,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.phamhieu.bookapi.domain.user.UserError.*;
+import static com.phamhieu.bookapi.api.user.UserValidation.*;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -27,29 +29,25 @@ public class UserService {
         return userStore.findAll();
     }
 
-    public User findUserById(final UUID userId) {
-        return userStore.findUserById(userId)
+    public User findById(final UUID userId) {
+        return userStore.findById(userId)
                 .orElseThrow(supplyUserNotFoundById(userId));
     }
 
-    public List<User> findUserByName(String userName) {
-        final List<User> users = userStore.findByNameContain(userName);
-        if (users.size() == 0) {
-            throw supplyUserNotFoundByName(userName).get();
-        }
-        return userStore.findByNameContain(userName);
+    public List<User> find(final String userName) {
+        return userStore.find(userName);
     }
 
-    public User addUser(final User user) throws NoSuchAlgorithmException {
-        checkInformation(user);
+    public User create(final User user) throws NoSuchAlgorithmException {
+        validateUserInfoCreate(user);
+        verifyUserIfAvailable(user.getUsername());
 
-        verifyUserIfAvailable(user);
         final User tempUser = User.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .password(hashPassword(user.getPassword()))
-                .firstname(user.getFirstname())
-                .lastname(user.getLastname())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .enabled(user.isEnabled())
                 .avatar(user.getAvatar())
                 .roleId(user.getRoleId())
@@ -57,37 +55,41 @@ public class UserService {
         return userStore.addUser(tempUser);
     }
 
-    public User updateUser(final User user, final UUID userId) throws NoSuchAlgorithmException {
-        checkInformation(user);
-        User tempUser = findUserById(userId);
+    public User update(final UUID userId, final User user) throws NoSuchAlgorithmException {
+        validateUserInfoUpdate(user);
+        final User tempUser = findById(userId);
+        verifyUserIfAvailableUpdate(tempUser, user.getUsername());
 
         tempUser.setUsername(user.getUsername());
-        tempUser.setPassword(hashPassword(user.getPassword()));
-        tempUser.setFirstname(user.getFirstname());
-        tempUser.setLastname(user.getLastname());
+        if (isNotBlank(user.getPassword())) {
+            tempUser.setPassword(hashPassword(user.getPassword()));
+        }
+        tempUser.setFirstName(user.getFirstName());
+        tempUser.setLastName(user.getLastName());
         tempUser.setEnabled(user.isEnabled());
         tempUser.setAvatar(user.getAvatar());
-        return userStore.updateUser(tempUser);
+        tempUser.setRoleId(user.getRoleId());
+        return userStore.update(tempUser);
     }
 
-    public void deleteUser(final UUID userId) {
-        userStore.deleteUser(userId);
+    public void delete(final UUID userId) {
+        userStore.delete(userId);
     }
 
-    private void checkInformation(User user) {
-        if (user.getUsername() == null || user.getPassword() == null) {
-            throw supplyNotEnough().get();
-        }
-    }
-
-    private void verifyUserIfAvailable(final User user) {
-        final Optional<User> userOptional = userStore.findByUsername(user.getUsername());
+    private void verifyUserIfAvailable(final String username) {
+        final Optional<User> userOptional = userStore.findByUsername(username);
         if (userOptional.isPresent()) {
-            throw supplyUserExist(user.getUsername()).get();
+            throw supplyUserExist(username).get();
         }
     }
 
-    String hashPassword(final String password) throws NoSuchAlgorithmException {
+    private void verifyUserIfAvailableUpdate(final User user, final String username) {
+        if (!username.equals(user.getUsername())) {
+            verifyUserIfAvailable(username);
+        }
+    }
+
+    private String hashPassword(final String password) throws NoSuchAlgorithmException {
         final MessageDigest md5 = MessageDigest.getInstance("MD5");
         md5.update((password + appSecurityCode).getBytes());
         final byte[] digest = md5.digest();

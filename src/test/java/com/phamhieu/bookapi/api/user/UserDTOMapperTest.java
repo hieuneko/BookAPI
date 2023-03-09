@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import static com.phamhieu.bookapi.api.user.UserDTOMapper.*;
 import static com.phamhieu.bookapi.fakes.UserFakes.*;
-import static com.phamhieu.bookapi.persistence.user.UserEntityMapper.toUserEntity;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserDTOMapperTest {
@@ -12,12 +11,12 @@ class UserDTOMapperTest {
     @Test
     void shouldToUserDTOResponse_OK() {
         final var expected = buildUser();
-        final var actual = toUserDTOResponse(expected);
+        final var actual = toUserResponseDTO(expected);
 
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getUsername(), actual.getUsername());
-        assertEquals(expected.getFirstname(), actual.getFirstname());
-        assertEquals(expected.getLastname(), actual.getLastname());
+        assertEquals(expected.getFirstName(), actual.getFirstName());
+        assertEquals(expected.getLastName(), actual.getLastName());
         assertEquals(expected.isEnabled(), actual.isEnabled());
         assertEquals(expected.getAvatar(), actual.getAvatar());
         assertEquals(expected.getRoleId(), actual.getRoleId());
@@ -39,8 +38,8 @@ class UserDTOMapperTest {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getUsername(), actual.getUsername());
         assertEquals(expected.getPassword(), actual.getPassword());
-        assertEquals(expected.getFirstname(), actual.getFirstname());
-        assertEquals(expected.getLastname(), actual.getLastname());
+        assertEquals(expected.getFirstName(), actual.getFirstName());
+        assertEquals(expected.getLastName(), actual.getLastName());
         assertEquals(expected.isEnabled(), actual.isEnabled());
         assertEquals(expected.getAvatar(), actual.getAvatar());
         assertEquals(expected.getRoleId(), actual.getRoleId());

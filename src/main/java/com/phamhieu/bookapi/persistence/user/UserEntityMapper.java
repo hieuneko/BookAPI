@@ -16,8 +16,8 @@ public class UserEntityMapper {
                 .roleId(userEntity.getRoleId())
                 .username(userEntity.getUsername())
                 .password(userEntity.getPassword())
-                .firstname(userEntity.getFirstname())
-                .lastname(userEntity.getLastname())
+                .firstName(userEntity.getFirstName())
+                .lastName(userEntity.getLastName())
                 .enabled(userEntity.isEnabled())
                 .avatar(userEntity.getAvatar())
                 .build();
@@ -36,8 +36,8 @@ public class UserEntityMapper {
                 .roleId(user.getRoleId())
                 .username(user.getUsername())
                 .password(user.getPassword())
-                .firstname(user.getFirstname())
-                .lastname(user.getLastname())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .enabled(user.isEnabled())
                 .avatar(user.getAvatar())
                 .build();
