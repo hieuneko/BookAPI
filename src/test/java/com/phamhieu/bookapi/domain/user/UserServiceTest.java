@@ -182,15 +182,17 @@ class UserServiceTest {
 
     @Test
     void shouldUpdate_UsernameExits() {
-        final var userUpdate = buildUser();
+        final var user = buildUser();
         final var userExist = buildUser();
-        final var userCurrent = buildUser();
+        final var userUpdate = buildUser();
+
         userUpdate.setUsername(userExist.getUsername());
 
-        when(userStore.findById(userCurrent.getId())).thenReturn(Optional.of(userCurrent));
+        when(userStore.findById(user.getId())).thenReturn(Optional.of(user));
         when(userStore.findByUsername(userUpdate.getUsername())).thenReturn(Optional.of(userUpdate));
 
-        assertThrows(BadRequestException.class, () -> userService.update(userCurrent.getId(), userUpdate));
+        assertThrows(BadRequestException.class, () -> userService.update(user.getId(), userUpdate));
+
         verify(userStore, never()).update(userUpdate);
     }
 
