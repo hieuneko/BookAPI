@@ -169,11 +169,7 @@ class UserServiceTest {
         final var userUpdate = buildUser();
         userUpdate.setPassword(randomAlphabetic(1, 5));
 
-        when(userStore.findById(user.getId())).thenReturn(Optional.of(user));
-
         assertThrows(BadRequestException.class, () -> userService.update(user.getId(), userUpdate));
-
-        verify(userStore).findById(user.getId());
     }
 
     @Test
@@ -182,7 +178,6 @@ class UserServiceTest {
         final var id = randomUUID();
 
         assertThrows(NotFoundException.class, () -> userService.update(id, updatedUser));
-        verify(userStore).findById(id);
     }
 
     @Test

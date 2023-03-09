@@ -45,8 +45,8 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.length()").value(users.size()))
                 .andExpect(jsonPath("$[0].id").value(users.get(0).getId().toString()))
                 .andExpect(jsonPath("$[0].username").value(users.get(0).getUsername()))
-                .andExpect(jsonPath("$[0].firstname").value(users.get(0).getFirstName()))
-                .andExpect(jsonPath("$[0].lastname").value(users.get(0).getLastName()))
+                .andExpect(jsonPath("$[0].firstName").value(users.get(0).getFirstName()))
+                .andExpect(jsonPath("$[0].lastName").value(users.get(0).getLastName()))
                 .andExpect(jsonPath("$[0].enabled").value(users.get(0).isEnabled()))
                 .andExpect(jsonPath("$[0].avatar").value(users.get(0).getAvatar()))
                 .andExpect(jsonPath("$[0].roleId").value(users.get(0).getRoleId().toString()));
@@ -64,8 +64,8 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(user.getId().toString()))
                 .andExpect(jsonPath("$.username").value(user.getUsername()))
-                .andExpect(jsonPath("$.firstname").value(user.getFirstName()))
-                .andExpect(jsonPath("$.lastname").value(user.getLastName()))
+                .andExpect(jsonPath("$.firstName").value(user.getFirstName()))
+                .andExpect(jsonPath("$.lastName").value(user.getLastName()))
                 .andExpect(jsonPath("$.enabled").value(user.isEnabled()))
                 .andExpect(jsonPath("$.avatar").value(user.getAvatar()))
                 .andExpect(jsonPath("$.roleId").value(user.getRoleId().toString()));
@@ -74,7 +74,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldFindUsersByNameContain_Ok() throws Exception {
+    void shouldFind_Ok() throws Exception {
         final var user = buildUser();
         final var expected = buildUsers();
 
@@ -82,20 +82,20 @@ class UserControllerTest {
 
         final var actual = userService.find(user.getUsername());
 
-        this.mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/search/" + user.getUsername()))
+        this.mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/search?name=" + user.getUsername()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(actual.size()))
                 .andExpect(jsonPath("$[0].id").value(actual.get(0).getId().toString()))
                 .andExpect(jsonPath("$[0].username").value(actual.get(0).getUsername()))
-                .andExpect(jsonPath("$[0].firstname").value(actual.get(0).getFirstName()))
-                .andExpect(jsonPath("$[0].lastname").value(actual.get(0).getLastName()))
+                .andExpect(jsonPath("$[0].firstName").value(actual.get(0).getFirstName()))
+                .andExpect(jsonPath("$[0].lastName").value(actual.get(0).getLastName()))
                 .andExpect(jsonPath("$[0].enabled").value(actual.get(0).isEnabled()))
                 .andExpect(jsonPath("$[0].avatar").value(actual.get(0).getAvatar()))
                 .andExpect(jsonPath("$[0].roleId").value(actual.get(0).getRoleId().toString()));
     }
 
     @Test
-    void shouldAddUser_Ok() throws Exception {
+    void shouldCreate_Ok() throws Exception {
         final var user = buildUser();
 
         when(userService.create(any(User.class))).thenReturn(user);
@@ -105,15 +105,15 @@ class UserControllerTest {
                 .content(new ObjectMapper().writeValueAsString(user)))
                 .andExpect(jsonPath("$.id").value(user.getId().toString()))
                 .andExpect(jsonPath("$.username").value(user.getUsername()))
-                .andExpect(jsonPath("$.firstname").value(user.getFirstName()))
-                .andExpect(jsonPath("$.lastname").value(user.getLastName()))
+                .andExpect(jsonPath("$.firstName").value(user.getFirstName()))
+                .andExpect(jsonPath("$.lastName").value(user.getLastName()))
                 .andExpect(jsonPath("$.avatar").value(user.getAvatar()))
                 .andExpect(jsonPath("$.roleId").value(user.getRoleId().toString()))
                 .andExpect(jsonPath("$.enabled").value(user.isEnabled()));
     }
 
     @Test
-    void shouldUpdateUser_Ok() throws Exception {
+    void shouldUpdate_Ok() throws Exception {
         final var user = buildUser();
         final var updatedUser = buildUser();
         updatedUser.setId(user.getId());
@@ -126,8 +126,8 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(updatedUser.getId().toString()))
                 .andExpect(jsonPath("$.username").value(updatedUser.getUsername()))
-                .andExpect(jsonPath("$.firstname").value(updatedUser.getFirstName()))
-                .andExpect(jsonPath("$.lastname").value(updatedUser.getLastName()))
+                .andExpect(jsonPath("$.firstName").value(updatedUser.getFirstName()))
+                .andExpect(jsonPath("$.lastName").value(updatedUser.getLastName()))
                 .andExpect(jsonPath("$.avatar").value(updatedUser.getAvatar()))
                 .andExpect(jsonPath("$.enabled").value(updatedUser.isEnabled()))
                 .andExpect(jsonPath("$.roleId").value(updatedUser.getRoleId().toString()));
