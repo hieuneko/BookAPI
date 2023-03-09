@@ -40,7 +40,7 @@ public class UserService {
 
     public User create(final User user) throws NoSuchAlgorithmException {
         validateUserInfoCreate(user);
-        verifyUserIfAvailable(user.getUsername());
+        verifyUsernameIfAvailable(user.getUsername());
 
         final User tempUser = User.builder()
                 .id(user.getId())
@@ -58,7 +58,7 @@ public class UserService {
     public User update(final UUID userId, final User user) throws NoSuchAlgorithmException {
         validateUserInfoUpdate(user);
         final User tempUser = findById(userId);
-        verifyUserIfAvailableUpdate(tempUser, user.getUsername());
+        verifyUsernameIfAvailableUpdate(tempUser.getUsername(), user.getUsername());
 
         tempUser.setUsername(user.getUsername());
         if (isNotBlank(user.getPassword())) {
@@ -76,16 +76,16 @@ public class UserService {
         userStore.delete(userId);
     }
 
-    private void verifyUserIfAvailable(final String username) {
+    private void verifyUsernameIfAvailable(final String username) {
         final Optional<User> userOptional = userStore.findByUsername(username);
         if (userOptional.isPresent()) {
             throw supplyUserExist(username).get();
         }
     }
 
-    private void verifyUserIfAvailableUpdate(final User user, final String username) {
-        if (!username.equals(user.getUsername())) {
-            verifyUserIfAvailable(username);
+    private void verifyUsernameIfAvailableUpdate(final String currentName, final String updateName) {
+        if (!updateName.equals(currentName)) {
+            verifyUsernameIfAvailable(updateName);
         }
     }
 

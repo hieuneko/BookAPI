@@ -15,7 +15,7 @@ public class UserError {
     }
 
     public static Supplier<BadRequestException> supplyPasswordLengthNotEnough() {
-        return () -> new BadRequestException("Password's length must at least 6 characters");
+        return () -> new BadRequestException("Password's length must be at least 6 characters");
     }
 
     public static Supplier<BadRequestException> supplyUserExist(final String username) {
@@ -23,6 +23,6 @@ public class UserError {
     }
 
     public static Supplier<BadRequestException> supplyNotEnoughInformation(final String inputInformation) {
-        return () -> new BadRequestException("Information isn't not enough, " + inputInformation + " must required");
+        return () -> new BadRequestException("Information isn't not enough, " + inputInformation + " must be required");
     }
 }
