@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import static com.phamhieu.bookapi.domain.user.UserError.*;
 import static com.phamhieu.bookapi.domain.user.UserValidation.*;
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -58,7 +59,7 @@ public class UserService {
     public User update(final UUID userId, final User user) throws NoSuchAlgorithmException {
         validateUserInfoUpdate(user);
         final User tempUser = findById(userId);
-        if (!tempUser.getUsername().equalsIgnoreCase(user.getUsername())) {
+        if (!equalsIgnoreCase(tempUser.getUsername(), user.getUsername())) {
             verifyUsernameIfAvailable(user.getUsername());
             tempUser.setUsername(user.getUsername());
         }
