@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface BookRepository extends CrudRepository<BookEntity, UUID> {
 
-    List<BookEntity> findByTitle(final String bookTitle);
+    List<BookEntity> findByTitleContaining(final String bookTitle);
 
-    List<BookEntity> findByAuthor(final String Author);
+    List<BookEntity> findByAuthorContaining(final String Author);
 }

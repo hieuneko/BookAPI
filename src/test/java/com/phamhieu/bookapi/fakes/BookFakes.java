@@ -1,5 +1,6 @@
 package com.phamhieu.bookapi.fakes;
 
+import com.phamhieu.bookapi.api.book.BookDTO;
 import com.phamhieu.bookapi.domain.book.Book;
 import com.phamhieu.bookapi.persistence.book.BookEntity;
 import lombok.experimental.UtilityClass;
@@ -52,5 +53,16 @@ public class BookFakes {
         return IntStream.range(1, 5)
                 .mapToObj(_ignored -> buildBookEntity())
                 .toList();
+    }
+
+    public static BookDTO buildBookDTO() {
+        return BookDTO.builder()
+                .id(randomUUID())
+                .title(randomAlphabetic(3, 10))
+                .author(randomAlphabetic(3, 10))
+                .description(randomAlphabetic(3, 10))
+                .image(randomAlphabetic(3, 10))
+                .userId(randomUUID())
+                .build();
     }
 }

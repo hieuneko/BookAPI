@@ -18,51 +18,45 @@ public class BookController {
 
     private final BookService bookService;
 
-    @Operation(summary = "find all books")
+    @Operation(summary = "Find all books")
     @GetMapping
-    public List<BookDTO> findAllBook() {
-        return toBookDTOs(bookService.findAllBook());
+    public List<BookDTO> findAll() {
+        return toBookDTOs(bookService.findAll());
     }
 
-    @Operation(summary = "find book by id")
+    @Operation(summary = "Find book by id")
     @GetMapping("{bookId}")
-    public BookDTO findBookById(@PathVariable(name = "bookId") UUID bookId) {
-        return toBookDTO(bookService.findBookById(bookId));
+    public BookDTO findById(@PathVariable UUID bookId) {
+        return toBookDTO(bookService.findById(bookId));
     }
 
-    @Operation(summary = "find book by title")
-    @GetMapping("title/{bookTitle}")
-    public List<BookDTO> findBookByTitle(@PathVariable(name = "bookTitle") String title) {
-        return toBookDTOs(bookService.findBookByTitle(title));
+    @Operation(summary = "Find book by title")
+    @GetMapping("title")
+    public List<BookDTO> findByTitle(@RequestParam String keyword) {
+        return toBookDTOs(bookService.findByTitle(keyword));
     }
 
-    @Operation(summary = "find book by author")
-    @GetMapping("author/{author}")
-    public List<BookDTO> findBookByAuthor(@PathVariable(name = "author") String author) {
-        return toBookDTOs(bookService.findBookByAuthor(author));
+    @Operation(summary = "Find book by author")
+    @GetMapping("author")
+    public List<BookDTO> findByAuthor(@RequestParam String keyword) {
+        return toBookDTOs(bookService.findByAuthor(keyword));
     }
 
     @Operation(summary = "Add new book")
     @PostMapping
-    public BookDTO addUser(@RequestBody BookDTO bookDTO) {
-        return toBookDTO(bookService.addBook(toBook(bookDTO)));
+    public BookDTO create(@RequestBody BookDTO bookDTO) {
+        return toBookDTO(bookService.create(toBook(bookDTO)));
     }
 
     @Operation(summary = "Update book information")
-    @PatchMapping("{bookId}")
-    public BookDTO updateBook(@RequestBody BookDTO bookDTO, @PathVariable(name = "bookId") UUID bookId) {
-        return toBookDTO(bookService.updateBook(toBook(bookDTO), bookId));
+    @PutMapping("{bookId}")
+    public BookDTO update(@PathVariable UUID bookId, @RequestBody BookDTO bookDTO) {
+        return toBookDTO(bookService.update(bookId, toBook(bookDTO)));
     }
 
     @Operation(summary = "Delete book by id")
     @DeleteMapping("{bookId}")
-    public String deleteBook(@PathVariable(name = "bookId") UUID bookId) {
-        try{
-            bookService.deleteBook(bookId);
-            return "success";
-        }
-        catch (Exception e) {
-            return "false";
-        }
+    public void delete(@PathVariable UUID bookId) {
+        bookService.delete(bookId);
     }
 }
