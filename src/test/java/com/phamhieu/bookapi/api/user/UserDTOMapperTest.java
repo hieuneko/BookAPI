@@ -25,7 +25,7 @@ class UserDTOMapperTest {
     @Test
     void shouldToUserDTOs_OK() {
         final var expected = buildUsers();
-        final var actual = toUserDTOs(expected);
+        final var actual = toUserResponseDTOs(expected);
 
         assertEquals(expected.size(), actual.size());
     }

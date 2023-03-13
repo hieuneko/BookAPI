@@ -106,7 +106,7 @@ class UserServiceTest {
         final var user = buildUser();
         user.setPassword(randomAlphabetic(6, 10));
 
-        when(userStore.addUser(any())).thenReturn(user);
+        when(userStore.create(any())).thenReturn(user);
 
         final var actual = userService.create(user);
 
@@ -119,7 +119,7 @@ class UserServiceTest {
         assertEquals(user.getAvatar(), actual.getAvatar());
         assertEquals(user.getRoleId(), actual.getRoleId());
 
-        verify(userStore).addUser(any());
+        verify(userStore).create(any());
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.phamhieu.bookapi.error;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,16 +11,9 @@ import static org.springframework.util.Assert.notNull;
 
 @Builder
 @Getter
+@AllArgsConstructor
 public class ErrorDTO {
 
     private String message;
     private Instant occurAt;
-
-    ErrorDTO(final String message, final Instant occurAt) {
-        notNull(message, "Cannot be null.");
-        notEmpty(message, "Cannot be empty");
-
-        this.message = message;
-        this.occurAt = occurAt;
-    }
 }

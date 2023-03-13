@@ -21,7 +21,7 @@ public class UserDTOMapper {
                 .build();
     }
 
-    public static List<UserResponseDTO> toUserDTOs(final List<User> users) {
+    public static List<UserResponseDTO> toUserResponseDTOs(final List<User> users) {
         return emptyIfNull(users)
                 .stream()
                 .map(UserDTOMapper::toUserResponseDTO)

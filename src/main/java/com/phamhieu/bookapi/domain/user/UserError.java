@@ -22,7 +22,7 @@ public class UserError {
         return () -> new BadRequestException("Username: %s already exist", username);
     }
 
-    public static Supplier<BadRequestException> supplyNotEnoughInformation(final String inputInformation) {
-        return () -> new BadRequestException("Information isn't not enough, " + inputInformation + " must be required");
+    public static Supplier<BadRequestException> supplyNotEnoughInformation(final String field) {
+        return () -> new BadRequestException("Information isn't not enough, " + field + " must be required");
     }
 }

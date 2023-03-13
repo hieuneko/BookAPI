@@ -25,7 +25,7 @@ public class UserStore {
         return repository.findById(userId).map(UserEntityMapper::toUser);
     }
 
-    public User addUser(final User user) {
+    public User create(final User user) {
         return toUser(repository.save(toUserEntity(user)));
     }
 

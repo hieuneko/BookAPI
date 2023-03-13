@@ -22,24 +22,24 @@ public class UserController {
     @Operation(summary = "Find all users")
     @GetMapping
     public List<UserResponseDTO> findAll() {
-        return toUserDTOs(userService.findAll());
+        return toUserResponseDTOs(userService.findAll());
     }
 
     @Operation(summary = "Find user by id")
     @GetMapping("{userId}")
-    public UserResponseDTO findUserById(@PathVariable UUID userId) {
+    public UserResponseDTO findById(@PathVariable UUID userId) {
         return toUserResponseDTO(userService.findById(userId));
     }
 
     @Operation(summary = "Find user by name")
     @GetMapping("search")
     public List<UserResponseDTO> find(final @RequestParam String name) {
-        return toUserDTOs(userService.find(name));
+        return toUserResponseDTOs(userService.find(name));
     }
 
     @Operation(summary = "Add new user")
     @PostMapping
-    public UserResponseDTO add(@RequestBody UserRequestDTO userRequestDTO) throws NoSuchAlgorithmException {
+    public UserResponseDTO create(@RequestBody UserRequestDTO userRequestDTO) throws NoSuchAlgorithmException {
         return toUserResponseDTO(userService.create(toUser(userRequestDTO)));
     }
 

@@ -52,15 +52,17 @@ public class UserService {
                 .avatar(user.getAvatar())
                 .roleId(user.getRoleId())
                 .build();
-        return userStore.addUser(tempUser);
+        return userStore.create(tempUser);
     }
 
     public User update(final UUID userId, final User user) throws NoSuchAlgorithmException {
         validateUserInfoUpdate(user);
         final User tempUser = findById(userId);
-        verifyUsernameIfAvailableUpdate(tempUser.getUsername(), user.getUsername());
+        if (!tempUser.getUsername().equalsIgnoreCase(user.getUsername())) {
+            verifyUsernameIfAvailable(user.getUsername());
+            tempUser.setUsername(user.getUsername());
+        }
 
-        tempUser.setUsername(user.getUsername());
         if (isNotBlank(user.getPassword())) {
             tempUser.setPassword(hashPassword(user.getPassword()));
         }
@@ -80,12 +82,6 @@ public class UserService {
         final Optional<User> userOptional = userStore.findByUsername(username);
         if (userOptional.isPresent()) {
             throw supplyUserExist(username).get();
-        }
-    }
-
-    private void verifyUsernameIfAvailableUpdate(final String currentName, final String updateName) {
-        if (!updateName.equals(currentName)) {
-            verifyUsernameIfAvailable(updateName);
         }
     }
 
