@@ -149,15 +149,15 @@ class UserServiceTest {
         when(userStore.findById((user.getId()))).thenReturn(Optional.of(user));
         when(userStore.update(user)).thenReturn(user);
 
-        final var expected = userService.update(user.getId(), updatedUser);
+        final var actual = userService.update(user.getId(), updatedUser);
 
-        assertEquals(expected.getId().toString(), updatedUser.getId().toString());
-        assertEquals(expected.getUsername(), updatedUser.getUsername());
-        assertEquals(expected.getFirstName(), updatedUser.getFirstName());
-        assertEquals(expected.getLastName(), updatedUser.getLastName());
-        assertEquals(expected.getAvatar(), updatedUser.getAvatar());
-        assertEquals(expected.getRoleId().toString(), updatedUser.getRoleId().toString());
-        assertEquals(expected.isEnabled(), updatedUser.isEnabled());
+        assertEquals(updatedUser.getId().toString(), actual.getId().toString());
+        assertEquals(updatedUser.getUsername(), actual.getUsername());
+        assertEquals(updatedUser.getFirstName(), actual.getFirstName());
+        assertEquals(updatedUser.getLastName(), actual.getLastName());
+        assertEquals(updatedUser.getAvatar(), actual.getAvatar());
+        assertEquals(updatedUser.getRoleId().toString(), actual.getRoleId().toString());
+        assertEquals(updatedUser.isEnabled(), actual.isEnabled());
 
         verify(userStore).update(user);
     }
