@@ -17,11 +17,11 @@ public class BookService {
     private final BookStore bookStore;
 
     public List<Book> findAllBook() {
-        return bookStore.findAllBook();
+        return bookStore.findAll();
     }
 
     public Book findBookById(final UUID bookId) {
-        return bookStore.findBookById(bookId)
+        return bookStore.findById(bookId)
                 .orElseThrow(supplyBookNotFoundById(bookId));
     }
 
@@ -43,7 +43,7 @@ public class BookService {
 
     public Book addBook(final Book book){
         validateBookInformation(book);
-        return bookStore.addBook(book);
+        return bookStore.add(book);
     }
 
     public Book updateBook(final Book book, final UUID bookId){
@@ -55,11 +55,11 @@ public class BookService {
         tempBook.setImage(book.getImage());
         tempBook.setUserId(book.getUserId());
 
-        return bookStore.updateBook(tempBook);
+        return bookStore.update(tempBook);
     }
 
     public void deleteBook(final UUID bookId) {
-        bookStore.deleteBook(bookId);
+        bookStore.delete(bookId);
     }
 
     private void validateBookInformation(Book book) {

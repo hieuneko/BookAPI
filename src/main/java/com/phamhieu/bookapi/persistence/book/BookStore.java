@@ -17,15 +17,15 @@ public class BookStore {
 
     private final BookRepository bookRepository;
 
-    public List<Book> findAllBook() {
+    public List<Book> findAll() {
         return toBooks(toList(bookRepository.findAll()));
     }
 
-    public Optional<Book> findBookById(final UUID bookId) {
+    public Optional<Book> findById(final UUID bookId) {
         return bookRepository.findById(bookId).map(BookEntityMapper::toBook);
     }
 
-    public Book addBook(final Book book) {
+    public Book add(final Book book) {
         return toBook(bookRepository.save(toBookEntity(book)));
     }
 
@@ -37,11 +37,11 @@ public class BookStore {
         return toBooks(bookRepository.findByAuthor(author));
     }
 
-    public Book updateBook(final Book book) {
+    public Book update(final Book book) {
         return toBook(bookRepository.save(toBookEntity(book)));
     }
 
-    public void deleteBook(final UUID bookId) {
+    public void delete(final UUID bookId) {
         bookRepository.deleteById(bookId);
     }
 }

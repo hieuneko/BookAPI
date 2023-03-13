@@ -1,0 +1,56 @@
+package com.phamhieu.bookapi.fakes;
+
+import com.phamhieu.bookapi.domain.book.Book;
+import com.phamhieu.bookapi.persistence.book.BookEntity;
+import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.RandomStringUtils;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.IntStream;
+
+import static java.util.UUID.randomUUID;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
+
+@UtilityClass
+public class BookFakes {
+
+    public static Book buildBook() {
+        return Book.builder()
+                .id(randomUUID())
+                .title(randomAlphabetic(3, 10))
+                .author(randomAlphabetic(3, 10))
+                .description(randomAlphabetic(3, 10))
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
+                .image(randomAlphabetic(3, 10))
+                .userId(randomUUID())
+                .build();
+    }
+
+    public static List<Book> buildBooks() {
+        return IntStream.range(1, 5)
+                .mapToObj(_ignored -> buildBook())
+                .toList();
+    }
+
+    public static BookEntity buildBookEntity() {
+        return BookEntity.builder()
+                .id(randomUUID())
+                .title(randomAlphabetic(3, 10))
+                .author(randomAlphabetic(3, 10))
+                .description(randomAlphabetic(3, 10))
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
+                .image(randomAlphabetic(3, 10))
+                .userId(randomUUID())
+                .build();
+    }
+
+    public static List<BookEntity> buildBookEntities() {
+        return IntStream.range(1, 5)
+                .mapToObj(_ignored -> buildBookEntity())
+                .toList();
+    }
+}
