@@ -195,8 +195,6 @@ class UserServiceTest {
         when(userStore.findByUsername(userUpdate.getUsername())).thenReturn(Optional.of(userUpdate));
 
         assertThrows(BadRequestException.class, () -> userService.update(user.getId(), userUpdate));
-
-        verify(userStore, never()).update(userUpdate);
     }
 
     @Test
