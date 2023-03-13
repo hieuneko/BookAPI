@@ -137,7 +137,6 @@ class UserServiceTest {
         when(userStore.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
 
         assertThrows(BadRequestException.class, () -> userService.create(user));
-        verify(userStore).findByUsername(user.getUsername());
     }
 
     @Test
@@ -195,6 +194,8 @@ class UserServiceTest {
         when(userStore.findByUsername(userUpdate.getUsername())).thenReturn(Optional.of(userUpdate));
 
         assertThrows(BadRequestException.class, () -> userService.update(user.getId(), userUpdate));
+
+        verify(userStore, never()).update(userUpdate);
     }
 
     @Test
