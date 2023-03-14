@@ -15,7 +15,7 @@ import java.util.UUID;
 @Setter
 @Getter
 @Builder
-public class BookDTO {
+public class BookResponseDTO {
     private UUID id;
     private String title;
     private String author;

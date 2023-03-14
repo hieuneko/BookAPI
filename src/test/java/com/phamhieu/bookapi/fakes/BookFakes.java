@@ -1,11 +1,11 @@
 package com.phamhieu.bookapi.fakes;
 
-import com.phamhieu.bookapi.api.book.BookDTO;
+import com.phamhieu.bookapi.api.book.BookRequestDTO;
+import com.phamhieu.bookapi.api.book.BookResponseDTO;
 import com.phamhieu.bookapi.domain.book.Book;
 import com.phamhieu.bookapi.persistence.book.BookEntity;
 import lombok.experimental.UtilityClass;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -54,14 +54,11 @@ public class BookFakes {
                 .toList();
     }
 
-    public static BookDTO buildBookDTO() {
-        return BookDTO.builder()
-                .id(randomUUID())
+    public static BookRequestDTO buildBookRequestDTO() {
+        return BookRequestDTO.builder()
                 .title(randomAlphabetic(3, 10))
                 .author(randomAlphabetic(3, 10))
                 .description(randomAlphabetic(3, 10))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .image(randomAlphabetic(3, 10))
                 .userId(randomUUID())
                 .build();
