@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 
 import static com.phamhieu.bookapi.fakes.BookFakes.buildBook;
@@ -45,6 +47,11 @@ class BookControllerTest {
     void shouldFindAll_OK() throws Exception {
         final var books = buildBooks();
 
+        books.get(0).setCreatedAt(LocalDateTime.of(2023,
+                Month.MARCH, 14, 15, 30, 40,1234567));
+        books.get(0).setUpdatedAt(LocalDateTime.of(2023,
+                Month.MARCH, 14, 15, 31, 40,1234567));
+
         when(bookService.findAll()).thenReturn(books);
 
         this.mvc.perform(MockMvcRequestBuilders.get(BASE_URL))
@@ -54,8 +61,8 @@ class BookControllerTest {
                 .andExpect(jsonPath("$[0].title").value(books.get(0).getTitle()))
                 .andExpect(jsonPath("$[0].author").value(books.get(0).getAuthor()))
                 .andExpect(jsonPath("$[0].description").value(books.get(0).getDescription()))
-                .andExpect(jsonPath("$[0].createdAt").value(books.get(0).getCreatedAt().format(pattern)))
-                .andExpect(jsonPath("$[0].updatedAt").value(books.get(0).getUpdatedAt().format(pattern)))
+                .andExpect(jsonPath("$[0].createdAt").value(books.get(0).getCreatedAt().toString()))
+                .andExpect(jsonPath("$[0].updatedAt").value(books.get(0).getUpdatedAt().toString()))
                 .andExpect(jsonPath("$[0].image").value(books.get(0).getImage()))
                 .andExpect(jsonPath("$[0].userId").value(books.get(0).getUserId().toString()));
 
@@ -66,6 +73,10 @@ class BookControllerTest {
     void shouldFindById_OK() throws Exception {
         final var book = buildBook();
 
+        book.setCreatedAt(LocalDateTime.of(2023,
+                Month.MARCH, 14, 15, 30, 40,1234567));
+        book.setUpdatedAt(LocalDateTime.of(2023,
+                Month.MARCH, 14, 15, 31, 40,1234567));
         when(bookService.findById(book.getId())).thenReturn(book);
 
         this.mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + book.getId()))
@@ -74,8 +85,8 @@ class BookControllerTest {
                 .andExpect(jsonPath("$.title").value(book.getTitle()))
                 .andExpect(jsonPath("$.author").value(book.getAuthor()))
                 .andExpect(jsonPath("$.description").value(book.getDescription()))
-                .andExpect(jsonPath("$.createdAt").value(book.getCreatedAt().format(pattern)))
-                .andExpect(jsonPath("$.updatedAt").value(book.getUpdatedAt().format(pattern)))
+                .andExpect(jsonPath("$.createdAt").value(book.getCreatedAt().toString()))
+                .andExpect(jsonPath("$.updatedAt").value(book.getUpdatedAt().toString()))
                 .andExpect(jsonPath("$.image").value(book.getImage()))
                 .andExpect(jsonPath("$.userId").value(book.getUserId().toString()));
 
@@ -85,6 +96,11 @@ class BookControllerTest {
     @Test
     void shouldFind_Ok() throws Exception {
         final var expected = buildBooks();
+
+        expected.get(0).setCreatedAt(LocalDateTime.of(2023,
+                Month.MARCH, 14, 15, 30, 40,1234567));
+        expected.get(0).setUpdatedAt(LocalDateTime.of(2023,
+                Month.MARCH, 14, 15, 31, 40,1234567));
 
         when(bookService.find(anyString())).thenReturn(expected);
 
@@ -97,8 +113,8 @@ class BookControllerTest {
                 .andExpect(jsonPath("$[0].title").value(actual.get(0).getTitle()))
                 .andExpect(jsonPath("$[0].author").value(actual.get(0).getAuthor()))
                 .andExpect(jsonPath("$[0].description").value(actual.get(0).getDescription()))
-                .andExpect(jsonPath("$[0].createdAt").value(actual.get(0).getCreatedAt().format(pattern)))
-                .andExpect(jsonPath("$[0].updatedAt").value(actual.get(0).getUpdatedAt().format(pattern)))
+                .andExpect(jsonPath("$[0].createdAt").value(actual.get(0).getCreatedAt().toString()))
+                .andExpect(jsonPath("$[0].updatedAt").value(actual.get(0).getUpdatedAt().toString()))
                 .andExpect(jsonPath("$[0].image").value(actual.get(0).getImage()))
                 .andExpect(jsonPath("$[0].userId").value(actual.get(0).getUserId().toString()));
     }
@@ -106,6 +122,11 @@ class BookControllerTest {
     @Test
     void shouldCreate_Ok() throws Exception {
         final var book = buildBook();
+
+        book.setCreatedAt(LocalDateTime.of(2023,
+                Month.MARCH, 14, 15, 30, 40,1234567));
+        book.setUpdatedAt(LocalDateTime.of(2023,
+                Month.MARCH, 14, 15, 31, 40,1234567));
 
         when(bookService.create(any(Book.class))).thenReturn(book);
 
@@ -116,8 +137,8 @@ class BookControllerTest {
                 .andExpect(jsonPath("$.title").value(book.getTitle()))
                 .andExpect(jsonPath("$.author").value(book.getAuthor()))
                 .andExpect(jsonPath("$.description").value(book.getDescription()))
-                .andExpect(jsonPath("$.createdAt").value(book.getCreatedAt().format(pattern)))
-                .andExpect(jsonPath("$.updatedAt").value(book.getUpdatedAt().format(pattern)))
+                .andExpect(jsonPath("$.createdAt").value(book.getCreatedAt().toString()))
+                .andExpect(jsonPath("$.updatedAt").value(book.getUpdatedAt().toString()))
                 .andExpect(jsonPath("$.image").value(book.getImage()))
                 .andExpect(jsonPath("$.userId").value(book.getUserId().toString()));
     }
@@ -127,6 +148,16 @@ class BookControllerTest {
         final var book = buildBook();
         final var updatedBook = buildBook();
         updatedBook.setId(book.getId());
+
+        book.setCreatedAt(LocalDateTime.of(2023,
+                Month.MARCH, 14, 15, 30, 40,1234567));
+        book.setUpdatedAt(LocalDateTime.of(2023,
+                Month.MARCH, 14, 15, 31, 40,1234567));
+
+        updatedBook.setCreatedAt(LocalDateTime.of(2023,
+                Month.MARCH, 14, 15, 30, 40,1234567));
+        updatedBook.setUpdatedAt(LocalDateTime.of(2023,
+                Month.MARCH, 14, 15, 31, 40,1234567));
 
         when(bookService.update(eq(book.getId()), any(Book.class))).thenReturn(updatedBook);
 
@@ -138,8 +169,8 @@ class BookControllerTest {
                 .andExpect(jsonPath("$.title").value(updatedBook.getTitle()))
                 .andExpect(jsonPath("$.author").value(updatedBook.getAuthor()))
                 .andExpect(jsonPath("$.description").value(updatedBook.getDescription()))
-                .andExpect(jsonPath("$.createdAt").value(book.getCreatedAt().format(pattern)))
-                .andExpect(jsonPath("$.updatedAt").value(book.getUpdatedAt().format(pattern)))
+                .andExpect(jsonPath("$.createdAt").value(book.getCreatedAt().toString()))
+                .andExpect(jsonPath("$.updatedAt").value(book.getUpdatedAt().toString()))
                 .andExpect(jsonPath("$.image").value(updatedBook.getImage()))
                 .andExpect(jsonPath("$.userId").value(updatedBook.getUserId().toString()));
     }

@@ -170,6 +170,15 @@ class BookServiceTest {
     }
 
     @Test
+    void shouldUpdate_ThrowBadRequest() {
+        final var id = randomUUID();
+        final var expected = buildBook();
+        expected.setTitle(null);
+
+        assertThrows(BadRequestException.class, () -> bookService.update(id, expected));
+    }
+
+    @Test
     void shouldDeleteById_Ok() {
         final var book = buildBook();
 
