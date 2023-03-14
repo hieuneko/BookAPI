@@ -36,10 +36,8 @@ public class UserValidation {
     }
 
     private static void validatePasswordLength(final String password) {
-        if (isNotBlank(password)) {
-            if (password.length() < 6) {
-                throw supplyPasswordLengthNotEnough().get();
-            }
+        if (isNotBlank(password) && password.length() < 6) {
+            throw supplyPasswordLengthNotEnough().get();
         }
     }
 }
