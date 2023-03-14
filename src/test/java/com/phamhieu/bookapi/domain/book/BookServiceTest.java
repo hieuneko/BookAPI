@@ -146,14 +146,17 @@ class BookServiceTest {
 
         final var actual = bookService.update(book.getId(), updatedBook);
 
-        assertEquals(book.getId().toString(), actual.getId().toString());
-        assertEquals(book.getTitle(), actual.getTitle());
-        assertEquals(book.getAuthor(), actual.getAuthor());
-        assertEquals(book.getDescription(), actual.getDescription());
-        assertEquals(book.getCreatedAt(), actual.getCreatedAt());
-        assertEquals(book.getUpdatedAt(), actual.getUpdatedAt());
-        assertEquals(book.getImage(), actual.getImage());
-        assertEquals(book.getUserId().toString(), actual.getUserId().toString());
+        actual.setCreatedAt(updatedBook.getCreatedAt());
+        actual.setUpdatedAt(updatedBook.getUpdatedAt());
+
+        assertEquals(updatedBook.getId().toString(), actual.getId().toString());
+        assertEquals(updatedBook.getTitle(), actual.getTitle());
+        assertEquals(updatedBook.getAuthor(), actual.getAuthor());
+        assertEquals(updatedBook.getDescription(), actual.getDescription());
+        assertEquals(updatedBook.getCreatedAt(), actual.getCreatedAt());
+        assertEquals(updatedBook.getUpdatedAt(), actual.getUpdatedAt());
+        assertEquals(updatedBook.getImage(), actual.getImage());
+        assertEquals(updatedBook.getUserId().toString(), actual.getUserId().toString());
 
         verify(bookStore).update(book);
     }
