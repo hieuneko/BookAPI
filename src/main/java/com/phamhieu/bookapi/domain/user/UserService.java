@@ -41,19 +41,11 @@ public class UserService {
 
     public User create(final User user) throws NoSuchAlgorithmException {
         validateUserInfoCreate(user);
+
         verifyUsernameIfAvailable(user.getUsername());
 
-        final User tempUser = User.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .password(hashPassword(user.getPassword()))
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .enabled(user.isEnabled())
-                .avatar(user.getAvatar())
-                .roleId(user.getRoleId())
-                .build();
-        return userStore.create(tempUser);
+        user.setPassword(hashPassword(user.getPassword()));
+        return userStore.create(user);
     }
 
     public User update(final UUID userId, final User user) throws NoSuchAlgorithmException {
