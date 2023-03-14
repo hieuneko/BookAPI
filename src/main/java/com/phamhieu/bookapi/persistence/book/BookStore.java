@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.phamhieu.bookapi.persistence.book.BookEntityMapper.*;
-import static org.hibernate.internal.util.collections.ArrayHelper.toList;
+import static org.apache.commons.collections4.IterableUtils.toList;
 
 @Repository
 @RequiredArgsConstructor
@@ -29,12 +29,8 @@ public class BookStore {
         return toBook(bookRepository.save(toBookEntity(book)));
     }
 
-    public List<Book> findByTitle(final String bookTitle) {
-        return toBooks(bookRepository.findByTitleContaining(bookTitle));
-    }
-
-    public List<Book> findByAuthor(final String author) {
-        return toBooks(bookRepository.findByAuthorContaining(author));
+    public List<Book> find(final String keyword) {
+        return toBooks(bookRepository.findAllByTitleOrAuthorOrDescription(keyword));
     }
 
     public Book update(final Book book) {

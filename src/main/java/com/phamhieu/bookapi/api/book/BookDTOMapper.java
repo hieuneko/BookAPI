@@ -13,6 +13,8 @@ public class BookDTOMapper {
                 .title(book.getTitle())
                 .author(book.getAuthor())
                 .description(book.getDescription())
+                .createdAt(book.getCreatedAt())
+                .updatedAt(book.getUpdatedAt())
                 .image(book.getImage())
                 .userId(book.getUserId())
                 .build();
@@ -31,6 +33,8 @@ public class BookDTOMapper {
                 .title(bookDTO.getTitle())
                 .author(bookDTO.getAuthor())
                 .description(bookDTO.getDescription())
+                .createdAt(bookDTO.getCreatedAt())
+                .updatedAt(bookDTO.getUpdatedAt())
                 .image(bookDTO.getImage())
                 .userId(bookDTO.getUserId())
                 .build();

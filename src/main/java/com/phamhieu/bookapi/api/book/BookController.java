@@ -30,16 +30,10 @@ public class BookController {
         return toBookDTO(bookService.findById(bookId));
     }
 
-    @Operation(summary = "Find book by title")
-    @GetMapping("title")
-    public List<BookDTO> findByTitle(@RequestParam String keyword) {
-        return toBookDTOs(bookService.findByTitle(keyword));
-    }
-
-    @Operation(summary = "Find book by author")
-    @GetMapping("author")
-    public List<BookDTO> findByAuthor(@RequestParam String keyword) {
-        return toBookDTOs(bookService.findByAuthor(keyword));
+    @Operation(summary = "Find book by title, author or description is containing")
+    @GetMapping("search")
+    public List<BookDTO> find(@RequestParam String keyword) {
+        return toBookDTOs(bookService.find(keyword));
     }
 
     @Operation(summary = "Add new book")

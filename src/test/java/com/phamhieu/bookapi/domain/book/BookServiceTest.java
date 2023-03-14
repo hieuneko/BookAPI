@@ -1,5 +1,7 @@
 package com.phamhieu.bookapi.domain.book;
 
+import com.phamhieu.bookapi.error.BadRequestException;
+import com.phamhieu.bookapi.error.NotFoundException;
 import com.phamhieu.bookapi.persistence.book.BookStore;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,8 +16,7 @@ import static com.phamhieu.bookapi.fakes.BookFakes.buildBook;
 import static com.phamhieu.bookapi.fakes.BookFakes.buildBooks;
 import static java.util.UUID.randomUUID;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -75,13 +76,13 @@ class BookServiceTest {
     }
 
     @Test
-    void shouldFindByTitle_OK() {
+    void shouldFind_OK() {
         final var book = buildBook();
         final var expected = buildBooks();
 
-        when(bookStore.findByTitle(anyString())).thenReturn(expected);
+        when(bookStore.find(anyString())).thenReturn(expected);
 
-        final var actual = bookService.findByTitle(book.getTitle());
+        final var actual = bookService.find(anyString());
 
         assertEquals(expected.size(), actual.size());
         assertEquals(expected.get(0).getId(), actual.get(0).getId());
@@ -93,49 +94,17 @@ class BookServiceTest {
         assertEquals(expected.get(0).getImage(), actual.get(0).getImage());
         assertEquals(expected.get(0).getUserId(), actual.get(0).getUserId());
 
-        verify(bookStore).findByTitle(book.getTitle());
+        verify(bookStore).find(anyString());
     }
 
     @Test
-    void shouldFindByTitle_Empty() {
+    void shouldFind_Empty() {
         final var title = randomAlphabetic(3, 10);
 
-        when(bookStore.findByTitle(title)).thenReturn(Collections.emptyList());
+        when(bookStore.find(title)).thenReturn(Collections.emptyList());
 
-        assertTrue(bookService.findByTitle(title).isEmpty());
-        verify(bookStore).findByTitle(title);
-    }
-
-    @Test
-    void shouldFindByAuthor_OK() {
-        final var book = buildBook();
-        final var expected = buildBooks();
-
-        when(bookStore.findByAuthor(anyString())).thenReturn(expected);
-
-        final var actual = bookService.findByAuthor(book.getAuthor());
-
-        assertEquals(expected.size(), actual.size());
-        assertEquals(expected.get(0).getId(), actual.get(0).getId());
-        assertEquals(expected.get(0).getTitle(), actual.get(0).getTitle());
-        assertEquals(expected.get(0).getAuthor(), actual.get(0).getAuthor());
-        assertEquals(expected.get(0).getDescription(), actual.get(0).getDescription());
-        assertEquals(expected.get(0).getCreatedAt(), actual.get(0).getCreatedAt());
-        assertEquals(expected.get(0).getUpdatedAt(), actual.get(0).getUpdatedAt());
-        assertEquals(expected.get(0).getImage(), actual.get(0).getImage());
-        assertEquals(expected.get(0).getUserId(), actual.get(0).getUserId());
-
-        verify(bookStore).findByAuthor(book.getAuthor());
-    }
-
-    @Test
-    void shouldFindByAuthor_Empty() {
-        final var author = randomAlphabetic(3, 10);
-
-        when(bookStore.findByAuthor(author)).thenReturn(Collections.emptyList());
-
-        assertTrue(bookService.findByAuthor(author).isEmpty());
-        verify(bookStore).findByAuthor(author);
+        assertTrue(bookService.find(title).isEmpty());
+        verify(bookStore).find(title);
     }
 
     @Test
@@ -161,12 +130,13 @@ class BookServiceTest {
     @Test
     void shouldCreate_ThrowBadRequest() {
         final var expected = buildBook();
+        expected.setTitle(null);
 
         assertThrows(BadRequestException.class, () -> bookService.create(expected));
     }
 
     @Test
-    void shouldUpdate_OK(){
+    void shouldUpdate_OK() {
         final var book = buildBook();
         final var updatedBook = buildBook();
         updatedBook.setId(book.getId());
@@ -174,16 +144,16 @@ class BookServiceTest {
         when(bookStore.findById((book.getId()))).thenReturn(Optional.of(book));
         when(bookStore.update(book)).thenReturn(book);
 
-        final var expected = bookService.update(book.getId(), updatedBook);
+        final var actual = bookService.update(book.getId(), updatedBook);
 
-        assertEquals(expected.getId(), updatedBook.getId());
-        assertEquals(expected.getTitle(), updatedBook.getTitle());
-        assertEquals(expected.getAuthor(), updatedBook.getAuthor());
-        assertEquals(expected.getDescription(), updatedBook.getDescription());
-        assertEquals(expected.getCreatedAt(), updatedBook.getCreatedAt());
-        assertEquals(expected.getUpdatedAt(), updatedBook.getUpdatedAt());
-        assertEquals(expected.getImage(), updatedBook.getImage());
-        assertEquals(expected.getUserId(), updatedBook.getUserId());
+        assertEquals(book.getId().toString(), actual.getId().toString());
+        assertEquals(book.getTitle(), actual.getTitle());
+        assertEquals(book.getAuthor(), actual.getAuthor());
+        assertEquals(book.getDescription(), actual.getDescription());
+        assertEquals(book.getCreatedAt(), actual.getCreatedAt());
+        assertEquals(book.getUpdatedAt(), actual.getUpdatedAt());
+        assertEquals(book.getImage(), actual.getImage());
+        assertEquals(book.getUserId().toString(), actual.getUserId().toString());
 
         verify(bookStore).update(book);
     }

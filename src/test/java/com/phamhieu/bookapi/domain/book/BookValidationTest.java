@@ -1,5 +1,6 @@
 package com.phamhieu.bookapi.domain.book;
 
+import com.phamhieu.bookapi.error.BadRequestException;
 import org.junit.jupiter.api.Test;
 
 import static com.phamhieu.bookapi.fakes.BookFakes.buildBook;

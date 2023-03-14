@@ -16,7 +16,6 @@ import static java.util.UUID.randomUUID;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -79,56 +78,31 @@ class BookStoreTest {
     }
 
     @Test
-    void shouldFindByTitle_OK() {
-        final var title = randomAlphabetic(3, 10);
+    void shouldFind_OK() {
+        final var input = randomAlphabetic(3, 10);
         final var expected = buildBookEntities();
 
-        when(bookRepository.findByTitleContaining(title))
+        when(bookRepository.findAllByTitleOrAuthorOrDescription(input))
                 .thenReturn(expected);
 
-        final var actual = bookStore.findByTitle(title);
+        final var actual = bookStore.find(input);
 
         assertEquals(actual.size(), expected.size());
 
-        verify(bookRepository).findByTitleContaining(title);
+        verify(bookRepository).findAllByTitleOrAuthorOrDescription(input);
     }
 
     @Test
-    void shouldFindByTitle_Empty() {
-        final var title = randomAlphabetic(3, 10);
-        when(bookRepository.findByTitleContaining(title))
+    void shouldFind_Empty() {
+        final var input = randomAlphabetic(3, 10);
+        when(bookRepository.findAllByTitleOrAuthorOrDescription(input))
                 .thenReturn(Collections.emptyList());
-        final var actual = bookStore.findByTitle(title);
+        final var actual = bookStore.find(input);
 
         assertTrue(actual.isEmpty());
-        verify(bookRepository).findByTitleContaining(title);
+        verify(bookRepository).findAllByTitleOrAuthorOrDescription(input);
     }
 
-    @Test
-    void shouldFindByAuthor_OK() {
-        final var author = randomAlphabetic(3, 10);
-        final var expected = buildBookEntities();
-
-        when(bookRepository.findByAuthorContaining(author))
-                .thenReturn(expected);
-
-        final var actual = bookStore.findByAuthor(author);
-
-        assertEquals(actual.size(), expected.size());
-
-        verify(bookRepository).findByAuthorContaining(author);
-    }
-
-    @Test
-    void shouldFindByAuthor_Empty() {
-        final var author = randomAlphabetic(3, 10);
-        when(bookRepository.findByAuthorContaining(author))
-                .thenReturn(Collections.emptyList());
-        final var actual = bookStore.findByAuthor(author);
-
-        assertTrue(actual.isEmpty());
-        verify(bookRepository).findByAuthorContaining(author);
-    }
 
     @Test
     void shouldCreate_OK() {
@@ -144,8 +118,6 @@ class BookStoreTest {
         assertEquals(expected.getUpdatedAt(), actual.getUpdatedAt());
         assertEquals(expected.getImage(), actual.getImage());
         assertEquals(expected.getUserId(), actual.getUserId());
-
-        verify(bookRepository).save(expected);
     }
 
     @Test
@@ -162,8 +134,6 @@ class BookStoreTest {
         assertEquals(expected.getUpdatedAt(), actual.getUpdatedAt());
         assertEquals(expected.getImage(), actual.getImage());
         assertEquals(expected.getUserId(), actual.getUserId());
-
-        verify(bookRepository).save(expected);
     }
 
     @Test

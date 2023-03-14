@@ -1,6 +1,7 @@
 package com.phamhieu.bookapi.api.book;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.phamhieu.bookapi.domain.book.Book;
 import com.phamhieu.bookapi.domain.book.BookService;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,8 @@ class BookControllerTest {
 
     @MockBean
     private BookService bookService;
+
+    private ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Test
     void shouldFindAll_OK() throws Exception {
@@ -72,15 +75,15 @@ class BookControllerTest {
     }
 
     @Test
-    void shouldFindByTitle_Ok() throws Exception {
+    void shouldFind_Ok() throws Exception {
         final var book = buildBook();
         final var expected = buildBooks();
 
-        when(bookService.findByTitle(anyString())).thenReturn(expected);
+        when(bookService.find(anyString())).thenReturn(expected);
 
-        final var actual = bookService.findByTitle(book.getTitle());
+        final var actual = bookService.find(anyString());
 
-        this.mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/title?keyword=" + book.getTitle()))
+        this.mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/search?keyword=" + anyString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(actual.size()))
                 .andExpect(jsonPath("$[0].id").value(actual.get(0).getId().toString()))
@@ -89,30 +92,6 @@ class BookControllerTest {
                 .andExpect(jsonPath("$[0].description").value(actual.get(0).getDescription()))
                 .andExpect(jsonPath("$[0].image").value(actual.get(0).getImage()))
                 .andExpect(jsonPath("$[0].userId").value(actual.get(0).getUserId().toString()));
-
-        verify(bookService).findByTitle(book.getTitle());
-    }
-
-    @Test
-    void shouldFindByAuthor_Ok() throws Exception {
-        final var book = buildBook();
-        final var expected = buildBooks();
-
-        when(bookService.findByAuthor(anyString())).thenReturn(expected);
-
-        final var actual = bookService.findByAuthor(book.getAuthor());
-
-        this.mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/author?keyword=" + book.getAuthor()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(actual.size()))
-                .andExpect(jsonPath("$[0].id").value(actual.get(0).getId().toString()))
-                .andExpect(jsonPath("$[0].title").value(actual.get(0).getTitle()))
-                .andExpect(jsonPath("$[0].author").value(actual.get(0).getAuthor()))
-                .andExpect(jsonPath("$[0].description").value(actual.get(0).getDescription()))
-                .andExpect(jsonPath("$[0].image").value(actual.get(0).getImage()))
-                .andExpect(jsonPath("$[0].userId").value(actual.get(0).getUserId().toString()));
-
-        verify(bookService).findByAuthor(book.getAuthor());
     }
 
     @Test
@@ -123,7 +102,7 @@ class BookControllerTest {
 
         this.mvc.perform(MockMvcRequestBuilders.post(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(book)))
+                .content(objectMapper.writeValueAsString(book)))
                 .andExpect(jsonPath("$.id").value(book.getId().toString()))
                 .andExpect(jsonPath("$.title").value(book.getTitle()))
                 .andExpect(jsonPath("$.author").value(book.getAuthor()))
@@ -142,14 +121,14 @@ class BookControllerTest {
 
         this.mvc.perform(MockMvcRequestBuilders.put(BASE_URL + "/" + book.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(updatedBook)))
+                .content(objectMapper.writeValueAsString(updatedBook)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(book.getId().toString()))
-                .andExpect(jsonPath("$.title").value(book.getTitle()))
-                .andExpect(jsonPath("$.author").value(book.getAuthor()))
-                .andExpect(jsonPath("$.description").value(book.getDescription()))
-                .andExpect(jsonPath("$.image").value(book.getImage()))
-                .andExpect(jsonPath("$.userId").value(book.getUserId().toString()));
+                .andExpect(jsonPath("$.id").value(updatedBook.getId().toString()))
+                .andExpect(jsonPath("$.title").value(updatedBook.getTitle()))
+                .andExpect(jsonPath("$.author").value(updatedBook.getAuthor()))
+                .andExpect(jsonPath("$.description").value(updatedBook.getDescription()))
+                .andExpect(jsonPath("$.image").value(updatedBook.getImage()))
+                .andExpect(jsonPath("$.userId").value(updatedBook.getUserId().toString()));
     }
 
     @Test

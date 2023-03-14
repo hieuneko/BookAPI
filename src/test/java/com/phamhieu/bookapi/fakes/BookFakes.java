@@ -4,11 +4,10 @@ import com.phamhieu.bookapi.api.book.BookDTO;
 import com.phamhieu.bookapi.domain.book.Book;
 import com.phamhieu.bookapi.persistence.book.BookEntity;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static java.util.UUID.randomUUID;
@@ -23,8 +22,8 @@ public class BookFakes {
                 .title(randomAlphabetic(3, 10))
                 .author(randomAlphabetic(3, 10))
                 .description(randomAlphabetic(3, 10))
-                .createdAt(Instant.now())
-                .updatedAt(Instant.now())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .image(randomAlphabetic(3, 10))
                 .userId(randomUUID())
                 .build();
@@ -42,8 +41,8 @@ public class BookFakes {
                 .title(randomAlphabetic(3, 10))
                 .author(randomAlphabetic(3, 10))
                 .description(randomAlphabetic(3, 10))
-                .createdAt(Instant.now())
-                .updatedAt(Instant.now())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .image(randomAlphabetic(3, 10))
                 .userId(randomUUID())
                 .build();
@@ -61,6 +60,8 @@ public class BookFakes {
                 .title(randomAlphabetic(3, 10))
                 .author(randomAlphabetic(3, 10))
                 .description(randomAlphabetic(3, 10))
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .image(randomAlphabetic(3, 10))
                 .userId(randomUUID())
                 .build();
