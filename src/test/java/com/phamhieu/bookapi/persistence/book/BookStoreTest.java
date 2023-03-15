@@ -82,25 +82,25 @@ class BookStoreTest {
         final var input = randomAlphabetic(3, 10);
         final var expected = buildBookEntities();
 
-        when(bookRepository.findAllByTitleOrAuthorOrDescription(input))
+        when(bookRepository.findByKeyword(input))
                 .thenReturn(expected);
 
         final var actual = bookStore.find(input);
 
         assertEquals(actual.size(), expected.size());
 
-        verify(bookRepository).findAllByTitleOrAuthorOrDescription(input);
+        verify(bookRepository).findByKeyword(input);
     }
 
     @Test
     void shouldFind_Empty() {
         final var input = randomAlphabetic(3, 10);
-        when(bookRepository.findAllByTitleOrAuthorOrDescription(input))
+        when(bookRepository.findByKeyword(input))
                 .thenReturn(Collections.emptyList());
         final var actual = bookStore.find(input);
 
         assertTrue(actual.isEmpty());
-        verify(bookRepository).findAllByTitleOrAuthorOrDescription(input);
+        verify(bookRepository).findByKeyword(input);
     }
 
 
@@ -138,9 +138,9 @@ class BookStoreTest {
 
     @Test
     void shouldDelete_OK() {
-        final var book = buildBookEntity();
-        bookStore.delete(book.getId());
+        final var bookId = randomUUID();
+        bookStore.delete(bookId);
 
-        verify(bookRepository).deleteById(book.getId());
+        verify(bookRepository).deleteById(bookId);
     }
 }

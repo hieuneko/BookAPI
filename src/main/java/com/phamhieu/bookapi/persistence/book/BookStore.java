@@ -30,7 +30,7 @@ public class BookStore {
     }
 
     public List<Book> find(final String keyword) {
-        return toBooks(bookRepository.findAllByTitleOrAuthorOrDescription(keyword));
+        return toBooks(bookRepository.findByKeyword(keyword));
     }
 
     public Book update(final Book book) {

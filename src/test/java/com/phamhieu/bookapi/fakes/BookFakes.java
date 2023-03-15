@@ -6,6 +6,7 @@ import com.phamhieu.bookapi.domain.book.Book;
 import com.phamhieu.bookapi.persistence.book.BookEntity;
 import lombok.experimental.UtilityClass;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -22,8 +23,8 @@ public class BookFakes {
                 .title(randomAlphabetic(3, 10))
                 .author(randomAlphabetic(3, 10))
                 .description(randomAlphabetic(3, 10))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
                 .image(randomAlphabetic(3, 10))
                 .userId(randomUUID())
                 .build();
@@ -41,8 +42,8 @@ public class BookFakes {
                 .title(randomAlphabetic(3, 10))
                 .author(randomAlphabetic(3, 10))
                 .description(randomAlphabetic(3, 10))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
                 .image(randomAlphabetic(3, 10))
                 .userId(randomUUID())
                 .build();

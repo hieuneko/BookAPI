@@ -77,7 +77,6 @@ class BookServiceTest {
 
     @Test
     void shouldFind_OK() {
-        final var book = buildBook();
         final var expected = buildBooks();
 
         when(bookStore.find(anyString())).thenReturn(expected);
@@ -184,6 +183,8 @@ class BookServiceTest {
     @Test
     void shouldDeleteById_Ok() {
         final var book = buildBook();
+
+        when(bookStore.findById(book.getId())).thenReturn(Optional.of(book));
 
         bookService.delete(book.getId());
         verify(bookStore).delete(book.getId());

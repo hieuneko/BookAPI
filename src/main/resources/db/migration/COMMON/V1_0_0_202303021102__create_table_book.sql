@@ -12,6 +12,3 @@ CREATE TABLE books
     user_id     UUID         NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
-
-INSERT INTO books(title, author, description, user_id)
-VALUES ('Harry Potter','JK. Rolling', 'Kha la hay', (SELECT id FROM users WHERE username = 'admin'))

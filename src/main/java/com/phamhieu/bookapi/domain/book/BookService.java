@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import static com.phamhieu.bookapi.domain.book.BookValidation.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,25 +33,26 @@ public class BookService {
     public Book create(final Book book) {
         validateBookInformation(book);
 
-        book.setCreatedAt(LocalDateTime.now());
+        book.setCreatedAt(Instant.now());
         return bookStore.create(book);
     }
 
     public Book update(final UUID bookId, final Book book) {
         validateBookInformation(book);
 
-        Book tempBook = findById(bookId);
-        tempBook.setTitle(book.getTitle());
-        tempBook.setAuthor(book.getAuthor());
-        tempBook.setDescription(book.getDescription());
-        tempBook.setUpdatedAt(LocalDateTime.now());
-        tempBook.setImage(book.getImage());
-        tempBook.setUserId(book.getUserId());
+        final Book existingBook = findById(bookId);
+        existingBook.setTitle(book.getTitle());
+        existingBook.setAuthor(book.getAuthor());
+        existingBook.setDescription(book.getDescription());
+        existingBook.setUpdatedAt(Instant.now());
+        existingBook.setImage(book.getImage());
+        existingBook.setUserId(book.getUserId());
 
-        return bookStore.update(tempBook);
+        return bookStore.update(existingBook);
     }
 
     public void delete(final UUID bookId) {
-        bookStore.delete(bookId);
+        final Book book = findById(bookId);
+        bookStore.delete(book.getId());
     }
 }

@@ -18,8 +18,8 @@ class BookValidationTest {
 
     @Test
     void shouldValidateBookInformation_TitleOrAuthorIsNull() {
-        final var book = buildBook();
-        book.setTitle(null);
+        final var book = buildBook()
+                .withTitle(null);
 
         assertThrows(BadRequestException.class, () -> validateBookInformation(book));
     }
