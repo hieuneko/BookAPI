@@ -23,8 +23,8 @@ public class BookFakes {
                 .title(randomAlphabetic(3, 10))
                 .author(randomAlphabetic(3, 10))
                 .description(randomAlphabetic(3, 10))
-                .createdAt(Instant.now())
-                .updatedAt(Instant.now())
+                .createdAt(Instant.parse("2023-03-15T11:35:24.00Z"))
+                .updatedAt(Instant.parse("2023-03-15T11:40:24.00Z"))
                 .image(randomAlphabetic(3, 10))
                 .userId(randomUUID())
                 .build();
@@ -42,8 +42,8 @@ public class BookFakes {
                 .title(randomAlphabetic(3, 10))
                 .author(randomAlphabetic(3, 10))
                 .description(randomAlphabetic(3, 10))
-                .createdAt(Instant.now())
-                .updatedAt(Instant.now())
+                .createdAt(Instant.parse("2023-03-15T11:35:24.00Z"))
+                .updatedAt(Instant.parse("2023-03-15T11:35:24.00Z"))
                 .image(randomAlphabetic(3, 10))
                 .userId(randomUUID())
                 .build();
