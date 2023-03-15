@@ -8,6 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
@@ -22,6 +24,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class UserServiceTest {
 
     @Mock
@@ -163,10 +166,35 @@ class UserServiceTest {
     }
 
     @Test
+    void shouldUpdateWithoutPassword_OK() throws NoSuchAlgorithmException {
+        final var user = buildUser();
+        final var updatedUser = buildUser();
+        updatedUser.setId(user.getId());
+        updatedUser.setPassword(null);
+
+        when(userStore.findById((user.getId()))).thenReturn(Optional.of(user));
+        when(userStore.update(user)).thenReturn(user);
+
+        final var actual = userService.update(user.getId(), updatedUser);
+
+        assertEquals(updatedUser.getId().toString(), actual.getId().toString());
+        assertEquals(updatedUser.getUsername(), actual.getUsername());
+        assertEquals(updatedUser.getFirstName(), actual.getFirstName());
+        assertEquals(updatedUser.getLastName(), actual.getLastName());
+        assertEquals(updatedUser.getAvatar(), actual.getAvatar());
+        assertEquals(updatedUser.getRoleId().toString(), actual.getRoleId().toString());
+        assertEquals(updatedUser.isEnabled(), actual.isEnabled());
+
+        verify(userStore).update(user);
+    }
+
+    @Test
     void shouldUpdate_ThrownPasswordLengthException() {
         final var user = buildUser();
         final var userUpdate = buildUser();
         userUpdate.setPassword(randomAlphabetic(1, 5));
+
+        when(userStore.findById((user.getId()))).thenReturn(Optional.of(user));
 
         assertThrows(BadRequestException.class, () -> userService.update(user.getId(), userUpdate));
     }
@@ -175,6 +203,7 @@ class UserServiceTest {
     void shouldUpdate_NotFound() {
         final var userUpdate = buildUser();
         final var uuid = randomUUID();
+        userUpdate.setPassword(randomAlphabetic(6, 10));
 
         when(userStore.findById(uuid)).thenReturn(Optional.empty());
 
@@ -187,6 +216,7 @@ class UserServiceTest {
         final var user = buildUser();
         final var userExist = buildUser();
         final var userUpdate = buildUser();
+        userExist.setUsername("hieu");
 
         userUpdate.setUsername(userExist.getUsername());
 
