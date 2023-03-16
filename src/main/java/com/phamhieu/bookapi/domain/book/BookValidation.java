@@ -7,7 +7,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @UtilityClass
 public class BookValidation {
-    public void validateBookInformation(final Book book) {
+    public void validateBook(final Book book) {
         validateTitle(book.getTitle());
         validateAuthor(book.getAuthor());
     }

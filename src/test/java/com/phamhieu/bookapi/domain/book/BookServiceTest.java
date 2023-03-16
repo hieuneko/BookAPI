@@ -114,14 +114,7 @@ class BookServiceTest {
 
         final var actual = bookService.create(book);
 
-        assertEquals(book.getId(), actual.getId());
-        assertEquals(book.getTitle(), actual.getTitle());
-        assertEquals(book.getAuthor(), actual.getAuthor());
-        assertEquals(book.getDescription(), actual.getDescription());
-        assertEquals(book.getCreatedAt(), actual.getCreatedAt());
-        assertEquals(book.getUpdatedAt(), actual.getUpdatedAt());
-        assertEquals(book.getImage(), actual.getImage());
-        assertEquals(book.getUserId(), actual.getUserId());
+        assertEquals(book, actual);
 
         verify(bookStore).create(any());
     }
@@ -196,7 +189,7 @@ class BookServiceTest {
 
         when(bookStore.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> bookService.findById(id));
+        assertThrows(NotFoundException.class, () -> bookService.delete(id));
         verify(bookStore).findById(id);
     }
 }

@@ -31,14 +31,14 @@ public class BookService {
     }
 
     public Book create(final Book book) {
-        validateBookInformation(book);
+        validateBook(book);
 
         book.setCreatedAt(Instant.now());
         return bookStore.create(book);
     }
 
     public Book update(final UUID bookId, final Book book) {
-        validateBookInformation(book);
+        validateBook(book);
 
         final Book existingBook = findById(bookId);
         existingBook.setTitle(book.getTitle());

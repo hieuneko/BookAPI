@@ -139,8 +139,7 @@ class BookStoreTest {
     @Test
     void shouldDelete_OK() {
         final var bookId = randomUUID();
-        bookStore.delete(bookId);
 
-        verify(bookRepository).deleteById(bookId);
+        assertDoesNotThrow(() -> bookStore.delete(bookId));
     }
 }

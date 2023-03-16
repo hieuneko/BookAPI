@@ -13,7 +13,7 @@ class BookValidationTest {
     void shouldValidateBookInformation() {
         final var book = buildBook();
 
-        validateBookInformation(book);
+        assertDoesNotThrow(() -> validateBook(book));
     }
 
     @Test
@@ -21,6 +21,6 @@ class BookValidationTest {
         final var book = buildBook()
                 .withTitle(null);
 
-        assertThrows(BadRequestException.class, () -> validateBookInformation(book));
+        assertThrows(BadRequestException.class, () -> validateBook(book));
     }
 }
