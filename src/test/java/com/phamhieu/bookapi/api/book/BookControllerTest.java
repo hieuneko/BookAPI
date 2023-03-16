@@ -1,15 +1,12 @@
 package com.phamhieu.bookapi.api.book;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.phamhieu.bookapi.api.AbstractControllerTest;
 import com.phamhieu.bookapi.domain.book.Book;
 import com.phamhieu.bookapi.domain.book.BookService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static com.phamhieu.bookapi.fakes.BookFakes.buildBook;
 import static com.phamhieu.bookapi.fakes.BookFakes.buildBooks;
@@ -25,14 +22,8 @@ class BookControllerTest extends AbstractControllerTest {
 
     private static final String BASE_URL = "/api/v1/books";
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    @Autowired
-    protected MockMvc mvc;
-
     @MockBean
     private BookService bookService;
-
-    private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Test
     void shouldFindAll_OK() throws Exception {
@@ -40,7 +31,7 @@ class BookControllerTest extends AbstractControllerTest {
 
         when(bookService.findAll()).thenReturn(books);
 
-        performGetRequest(this.mvc, BASE_URL)
+        get(BASE_URL)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(books.size()))
                 .andExpect(jsonPath("$[0].id").value(books.get(0).getId().toString()))
@@ -61,7 +52,7 @@ class BookControllerTest extends AbstractControllerTest {
 
         when(bookService.findById(book.getId())).thenReturn(book);
 
-        performGetRequest(this.mvc, BASE_URL + "/" + book.getId())
+        get(BASE_URL + "/" + book.getId())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(book.getId().toString()))
                 .andExpect(jsonPath("$.title").value(book.getTitle()))
@@ -83,7 +74,7 @@ class BookControllerTest extends AbstractControllerTest {
 
         final var actual = bookService.find(anyString());
 
-        performGetRequest(this.mvc, BASE_URL + "/search?keyword=" + anyString())
+        get(BASE_URL + "/search?keyword=" + anyString())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(actual.size()))
                 .andExpect(jsonPath("$[0].id").value(actual.get(0).getId().toString()))
@@ -102,7 +93,7 @@ class BookControllerTest extends AbstractControllerTest {
 
         when(bookService.create(any(Book.class))).thenReturn(book);
 
-        performPostRequest(this.mvc, BASE_URL, objectMapper.writeValueAsString(book))
+        post(BASE_URL, book)
                 .andExpect(jsonPath("$.id").value(book.getId().toString()))
                 .andExpect(jsonPath("$.title").value(book.getTitle()))
                 .andExpect(jsonPath("$.author").value(book.getAuthor()))
@@ -121,7 +112,7 @@ class BookControllerTest extends AbstractControllerTest {
 
         when(bookService.update(eq(book.getId()), any(Book.class))).thenReturn(updatedBook);
 
-        performPutRequest(this.mvc, BASE_URL + "/" + book.getId(), objectMapper.writeValueAsString(updatedBook))
+        put(BASE_URL + "/" + book.getId(), updatedBook)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(updatedBook.getId().toString()))
                 .andExpect(jsonPath("$.title").value(updatedBook.getTitle()))
@@ -137,7 +128,7 @@ class BookControllerTest extends AbstractControllerTest {
     void shouldDeleteById_Ok() throws Exception {
         final var book = buildBook();
 
-        performDeleteRequest(this.mvc, BASE_URL + "/" + book.getId())
+        delete(BASE_URL + "/" + book.getId())
                 .andExpect(status().isOk());
 
         verify(bookService).delete(book.getId());
