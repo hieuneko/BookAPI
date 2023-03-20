@@ -1,16 +1,17 @@
 package com.phamhieu.bookapi.api.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.phamhieu.bookapi.api.AbstractControllerTest;
+import com.phamhieu.bookapi.api.WithMockAdmin;
+import com.phamhieu.bookapi.domain.auth.AuthsProvider;
 import com.phamhieu.bookapi.domain.user.User;
 import com.phamhieu.bookapi.domain.user.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.phamhieu.bookapi.api.user.UserDTOMapper.toUserResponseDTO;
 import static com.phamhieu.bookapi.fakes.UserFakes.buildUser;
@@ -23,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(UserController.class)
 @AutoConfigureMockMvc
-class UserControllerTest {
+class UserControllerTest extends AbstractControllerTest {
 
     private static final String BASE_URL = "/api/v1/users";
 
@@ -34,13 +35,23 @@ class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private AuthsProvider authsProvider;
+
+    @BeforeEach
+    void init() {
+        when(authsProvider.getCurrentAuthentication())
+                .thenCallRealMethod();
+    }
+
     @Test
+    @WithMockAdmin
     void shouldFindAll_OK() throws Exception {
         final var users = buildUsers();
 
         when(userService.findAll()).thenReturn(users);
 
-        this.mvc.perform(MockMvcRequestBuilders.get(BASE_URL))
+            get(BASE_URL)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(users.size()))
                 .andExpect(jsonPath("$[0].id").value(users.get(0).getId().toString()))
@@ -55,12 +66,13 @@ class UserControllerTest {
     }
 
     @Test
+    @WithMockAdmin
     void shouldFindById_OK() throws Exception {
         final var user = buildUser();
 
         when(userService.findById(user.getId())).thenReturn(user);
 
-        this.mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + user.getId()))
+        get(BASE_URL + "/" + user.getId())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(user.getId().toString()))
                 .andExpect(jsonPath("$.username").value(user.getUsername()))
@@ -74,6 +86,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithMockAdmin
     void shouldFind_Ok() throws Exception {
         final var user = buildUser();
         final var expected = buildUsers();
@@ -82,7 +95,7 @@ class UserControllerTest {
 
         final var actual = userService.find(user.getUsername());
 
-        this.mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/search?name=" + user.getUsername()))
+        get(BASE_URL + "/search?name=" + user.getUsername())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(actual.size()))
                 .andExpect(jsonPath("$[0].id").value(actual.get(0).getId().toString()))
@@ -95,14 +108,14 @@ class UserControllerTest {
     }
 
     @Test
+    @WithMockAdmin
     void shouldCreate_Ok() throws Exception {
         final var user = buildUser();
 
         when(userService.create(any(User.class))).thenReturn(user);
 
-        this.mvc.perform(MockMvcRequestBuilders.post(BASE_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(user)))
+        post(BASE_URL, user)
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(user.getId().toString()))
                 .andExpect(jsonPath("$.username").value(user.getUsername()))
                 .andExpect(jsonPath("$.firstName").value(user.getFirstName()))
@@ -113,6 +126,7 @@ class UserControllerTest {
     }
 
     @Test
+    @WithMockAdmin
     void shouldUpdate_Ok() throws Exception {
         final var user = buildUser();
         final var updatedUser = buildUser();
@@ -120,9 +134,7 @@ class UserControllerTest {
 
         when(userService.update(eq(user.getId()), any(User.class))).thenReturn(updatedUser);
 
-        this.mvc.perform(MockMvcRequestBuilders.put(BASE_URL + "/" + user.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(toUserResponseDTO(updatedUser))))
+        put(BASE_URL + "/" + user.getId(), toUserResponseDTO(updatedUser))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(updatedUser.getId().toString()))
                 .andExpect(jsonPath("$.username").value(updatedUser.getUsername()))
@@ -134,10 +146,11 @@ class UserControllerTest {
     }
 
     @Test
+    @WithMockAdmin
     void shouldDeleteById_Ok() throws Exception {
         final var user = buildUser();
 
-        this.mvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + user.getId()))
+        delete(BASE_URL + "/" + user.getId())
                 .andExpect(status().isOk());
 
         verify(userService).delete(user.getId());

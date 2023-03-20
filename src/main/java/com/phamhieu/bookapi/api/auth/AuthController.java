@@ -2,6 +2,7 @@ package com.phamhieu.bookapi.api.auth;
 
 import com.phamhieu.bookapi.domain.auth.JwtTokenService;
 import com.phamhieu.bookapi.domain.auth.JwtUserDetails;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,7 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
 
+    @Operation(summary = "User login into system")
     @PostMapping
     public JwtTokenResponseDTO login(@RequestBody LoginDTO loginDTO) {
         final Authentication authentication = authenticationManager.authenticate(toAuthentication(loginDTO));

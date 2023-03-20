@@ -3,13 +3,17 @@ package com.phamhieu.bookapi.domain.user;
 import com.phamhieu.bookapi.error.BadRequestException;
 import com.phamhieu.bookapi.error.NotFoundException;
 import com.phamhieu.bookapi.persistence.user.UserStore;
+import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
@@ -25,6 +29,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
+@RequiredArgsConstructor
 class UserServiceTest {
 
     @Mock
@@ -32,6 +37,14 @@ class UserServiceTest {
 
     @InjectMocks
     private UserService userService;
+
+    @Spy
+    BCryptPasswordEncoder passwordEncoder;
+
+    @BeforeEach
+    void setUp() {
+        passwordEncoder = new BCryptPasswordEncoder();
+    }
 
     @Test
     void shouldFindAll_OK() {
@@ -143,7 +156,7 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldUpdate_OK() throws NoSuchAlgorithmException {
+    void shouldUpdate_OK() {
         final var user = buildUser();
         final var updatedUser = buildUser();
         updatedUser.setId(user.getId());
@@ -166,7 +179,7 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldUpdateWithoutPassword_OK() throws NoSuchAlgorithmException {
+    void shouldUpdateWithoutPassword_OK() {
         final var user = buildUser();
         final var updatedUser = buildUser();
         updatedUser.setId(user.getId());

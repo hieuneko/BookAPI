@@ -3,8 +3,10 @@ package com.phamhieu.bookapi.domain.auth;
 import com.phamhieu.bookapi.error.UnauthorizedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 
-public class AuthProvider {
+@Service
+public class AuthsProvider {
 
     public UserAuthenticationToken getCurrentAuthentication() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -2,11 +2,9 @@ package com.phamhieu.bookapi.domain.user;
 
 import com.phamhieu.bookapi.persistence.user.UserStore;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.xml.bind.DatatypeConverter;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
@@ -23,8 +21,7 @@ public class UserService {
 
     private final UserStore userStore;
 
-    @Value("${security.encode}")
-    private String appSecurityCode;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public List<User> findAll() {
         return userStore.findAll();
@@ -44,11 +41,11 @@ public class UserService {
 
         verifyUsernameIfAvailable(user.getUsername());
 
-        user.setPassword(hashPassword(user.getPassword()));
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         return userStore.create(user);
     }
 
-    public User update(final UUID userId, final User user) throws NoSuchAlgorithmException {
+    public User update(final UUID userId, final User user) {
         validateUserInfoUpdate(user);
         final User tempUser = findById(userId);
         if (!equalsIgnoreCase(tempUser.getUsername(), user.getUsername())) {
@@ -57,7 +54,7 @@ public class UserService {
         }
 
         if (isNotBlank(user.getPassword())) {
-            tempUser.setPassword(hashPassword(user.getPassword()));
+            tempUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
         tempUser.setFirstName(user.getFirstName());
         tempUser.setLastName(user.getLastName());
@@ -76,12 +73,5 @@ public class UserService {
         if (userOptional.isPresent()) {
             throw supplyUserExist(username).get();
         }
-    }
-
-    private String hashPassword(final String password) throws NoSuchAlgorithmException {
-        final MessageDigest md5 = MessageDigest.getInstance("MD5");
-        md5.update((password + appSecurityCode).getBytes());
-        final byte[] digest = md5.digest();
-        return DatatypeConverter.printHexBinary(digest).toUpperCase();
     }
 }

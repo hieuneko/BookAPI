@@ -30,6 +30,6 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     private User buildUser(final com.phamhieu.bookapi.persistence.user.UserEntity userEntity) {
         return new JwtUserDetails(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword(),
-                List.of(new SimpleGrantedAuthority(roleStore.getRoleById(userEntity.getRoleId()))));
+                List.of(new SimpleGrantedAuthority(roleStore.findRoleName(userEntity.getRoleId()))));
     }
 }
