@@ -10,6 +10,8 @@ import org.springframework.security.test.context.support.WithSecurityContextFact
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.UUID.randomUUID;
+
 public class WithMockAdminSecurityContextFactory implements WithSecurityContextFactory<WithMockAdmin> {
 
     @Override
@@ -17,7 +19,7 @@ public class WithMockAdminSecurityContextFactory implements WithSecurityContextF
         final var context = SecurityContextHolder.createEmptyContext();
 
         final Authentication auth = new UserAuthenticationToken(
-                UUID.fromString("4a434128-8656-427e-9fed-d269e18d9486"),
+                UUID.randomUUID(),
                 "admin",
                 List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
         );

@@ -7,11 +7,11 @@ import com.phamhieu.bookapi.domain.user.User;
 import com.phamhieu.bookapi.domain.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static com.phamhieu.bookapi.api.user.UserDTOMapper.toUserResponseDTO;
 import static com.phamhieu.bookapi.fakes.UserFakes.buildUser;
@@ -23,14 +23,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
+@ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 class UserControllerTest extends AbstractControllerTest {
 
     private static final String BASE_URL = "/api/v1/users";
-
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    @Autowired
-    protected MockMvc mvc;
 
     @MockBean
     private UserService userService;

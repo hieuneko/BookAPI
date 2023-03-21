@@ -25,11 +25,12 @@ public class JwtUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userStore.findByUsername(username)
                 .map(user -> buildUser(toUserEntity(user)))
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("User with username: " + username+" not be found"));
     }
 
     private User buildUser(final com.phamhieu.bookapi.persistence.user.UserEntity userEntity) {
+        final String role = roleStore.findRoleName(userEntity.getRoleId());
         return new JwtUserDetails(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword(),
-                List.of(new SimpleGrantedAuthority(roleStore.findRoleName(userEntity.getRoleId()))));
+                List.of(new SimpleGrantedAuthority(role)));
     }
 }

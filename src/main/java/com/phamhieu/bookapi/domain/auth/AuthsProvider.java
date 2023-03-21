@@ -17,4 +17,12 @@ public class AuthsProvider {
 
         return (UserAuthenticationToken) authentication;
     }
+
+    public String getCurrentUserRole() {
+        return getCurrentAuthentication().getRole();
+    }
+
+    public String getCurrentUserId() {
+        return getCurrentAuthentication().getUserId().toString();
+    }
 }

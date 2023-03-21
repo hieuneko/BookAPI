@@ -1,12 +1,18 @@
 package com.phamhieu.bookapi.api.book;
 
 import com.phamhieu.bookapi.api.AbstractControllerTest;
+import com.phamhieu.bookapi.api.WithMockAdmin;
+import com.phamhieu.bookapi.api.WithMockUser;
+import com.phamhieu.bookapi.domain.auth.AuthsProvider;
 import com.phamhieu.bookapi.domain.book.Book;
 import com.phamhieu.bookapi.domain.book.BookService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static com.phamhieu.bookapi.fakes.BookFakes.buildBook;
 import static com.phamhieu.bookapi.fakes.BookFakes.buildBooks;
@@ -17,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookController.class)
-@AutoConfigureMockMvc
+@ExtendWith(SpringExtension.class)
 class BookControllerTest extends AbstractControllerTest {
 
     private static final String BASE_URL = "/api/v1/books";
@@ -25,7 +31,17 @@ class BookControllerTest extends AbstractControllerTest {
     @MockBean
     private BookService bookService;
 
+    @MockBean
+    private AuthsProvider authsProvider;
+
+    @BeforeEach
+    void init() {
+        when(authsProvider.getCurrentAuthentication())
+                .thenCallRealMethod();
+    }
+
     @Test
+    @WithMockUser
     void shouldFindAll_OK() throws Exception {
         final var books = buildBooks();
 
@@ -47,6 +63,7 @@ class BookControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithMockUser
     void shouldFindById_OK() throws Exception {
         final var book = buildBook();
 
@@ -67,6 +84,7 @@ class BookControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithMockUser
     void shouldFind_Ok() throws Exception {
         final var expected = buildBooks();
 
@@ -88,6 +106,7 @@ class BookControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithMockUser
     void shouldCreate_Ok() throws Exception {
         final var book = buildBook();
 
@@ -105,6 +124,7 @@ class BookControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithMockAdmin
     void shouldUpdate_Ok() throws Exception {
         final var book = buildBook();
         final var updatedBook = buildBook()
@@ -125,6 +145,7 @@ class BookControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithMockAdmin
     void shouldDeleteById_Ok() throws Exception {
         final var book = buildBook();
 

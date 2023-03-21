@@ -4,13 +4,15 @@ import com.phamhieu.bookapi.domain.auth.AuthsProvider;
 import com.phamhieu.bookapi.persistence.book.BookStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import static com.phamhieu.bookapi.domain.auth.AuthError.supplyAuthorizationAccessNeeded;
 import static com.phamhieu.bookapi.domain.book.BookValidation.*;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import org.apache.commons.lang3.StringUtils;
 
-import static com.phamhieu.bookapi.domain.auth.AuthValidation.*;
 import static com.phamhieu.bookapi.domain.book.BookError.*;
 
 @Service
@@ -43,7 +45,7 @@ public class BookService {
     }
 
     public Book update(final UUID bookId, final Book book) {
-        validateAuth(authsProvider, book.getUserId());
+        validateAuthPermission(book.getUserId());
 
         validateBook(book);
         final Book existingBook = findById(bookId);
@@ -59,8 +61,17 @@ public class BookService {
 
     public void delete(final UUID bookId) {
         final Book book = findById(bookId);
-        validateAuth(authsProvider, book.getUserId());
+        validateAuthPermission(book.getUserId());
 
         bookStore.delete(book.getId());
+    }
+
+    private void validateAuthPermission(final UUID userId) {
+        if (StringUtils.equals(authsProvider.getCurrentUserRole(), "ROLE_ADMIN")) {
+            return;
+        }
+        if (!StringUtils.equals(authsProvider.getCurrentUserId(), userId.toString())) {
+            throw supplyAuthorizationAccessNeeded().get();
+        }
     }
 }
