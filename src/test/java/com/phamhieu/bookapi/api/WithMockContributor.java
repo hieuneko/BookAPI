@@ -7,5 +7,5 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 @WithSecurityContext(factory = WithMockUserSecurityContextFactory.class)
-public @interface WithMockUser {
+public @interface WithMockContributor {
 }

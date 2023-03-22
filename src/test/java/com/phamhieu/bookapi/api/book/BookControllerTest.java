@@ -2,14 +2,13 @@ package com.phamhieu.bookapi.api.book;
 
 import com.phamhieu.bookapi.api.AbstractControllerTest;
 import com.phamhieu.bookapi.api.WithMockAdmin;
-import com.phamhieu.bookapi.api.WithMockUser;
+import com.phamhieu.bookapi.api.WithMockContributor;
 import com.phamhieu.bookapi.domain.auth.AuthsProvider;
 import com.phamhieu.bookapi.domain.book.Book;
 import com.phamhieu.bookapi.domain.book.BookService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -41,7 +40,7 @@ class BookControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockContributor
     void shouldFindAll_OK() throws Exception {
         final var books = buildBooks();
 
@@ -63,7 +62,7 @@ class BookControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockContributor
     void shouldFindById_OK() throws Exception {
         final var book = buildBook();
 
@@ -84,7 +83,7 @@ class BookControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockContributor
     void shouldFind_Ok() throws Exception {
         final var expected = buildBooks();
 
@@ -106,13 +105,14 @@ class BookControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockContributor
     void shouldCreate_Ok() throws Exception {
         final var book = buildBook();
 
         when(bookService.create(any(Book.class))).thenReturn(book);
 
         post(BASE_URL, book)
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(book.getId().toString()))
                 .andExpect(jsonPath("$.title").value(book.getTitle()))
                 .andExpect(jsonPath("$.author").value(book.getAuthor()))

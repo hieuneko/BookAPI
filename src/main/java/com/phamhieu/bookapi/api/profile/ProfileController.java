@@ -1,19 +1,14 @@
 package com.phamhieu.bookapi.api.profile;
 
-import com.phamhieu.bookapi.api.user.UserRequestDTO;
-import com.phamhieu.bookapi.api.user.UserResponseDTO;
-import com.phamhieu.bookapi.domain.auth.UserAuthenticationToken;
-import com.phamhieu.bookapi.domain.user.UserService;
+import com.phamhieu.bookapi.domain.profile.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.util.UUID;
-
-import static com.phamhieu.bookapi.api.user.UserDTOMapper.toUser;
-import static com.phamhieu.bookapi.api.user.UserDTOMapper.toUserResponseDTO;
+import static com.phamhieu.bookapi.api.profile.ProfileDTOMapper.toProfileResponseDTO;
+import static com.phamhieu.bookapi.api.profile.ProfileDTOMapper.toUser;
 
 
 @RestController
@@ -22,21 +17,18 @@ import static com.phamhieu.bookapi.api.user.UserDTOMapper.toUserResponseDTO;
 @PreAuthorize("hasAnyRole('ADMIN', 'CONTRIBUTOR')")
 public class ProfileController {
 
-    private final UserAuthenticationToken userAuthenticationToken;
 
-    private final UserService userService;
+    private final ProfileService profileService;
 
-    @Operation(summary = "Get user profile")
+    @Operation(summary = "Find user profile")
     @GetMapping
-    public UserResponseDTO get() {
-        final UUID userId = userAuthenticationToken.getUserId();
-        return toUserResponseDTO(userService.findById(userId));
+    public ProfileResponseDTO find() {
+        return toProfileResponseDTO(profileService.findProfile());
     }
 
     @Operation(summary = "Update user profile")
     @PutMapping
-    public UserResponseDTO update(@RequestBody UserRequestDTO userRequestDTO) {
-        final UUID userId = userAuthenticationToken.getUserId();
-        return toUserResponseDTO(userService.update(userId, toUser(userRequestDTO)));
+    public ProfileResponseDTO update(@RequestBody ProfileRequestDTO profileRequestDTO) {
+        return toProfileResponseDTO(profileService.update(toUser(profileRequestDTO)));
     }
 }

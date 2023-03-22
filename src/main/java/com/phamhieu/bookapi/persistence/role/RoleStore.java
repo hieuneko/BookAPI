@@ -12,6 +12,6 @@ public class RoleStore {
     private final RoleRepository roleRepository;
 
     public String findRoleName(final UUID roleId) {
-        return "ROLE_" + roleRepository.findRoleName(roleId);
+        return roleRepository.findRoleName(roleId);
     }
 }

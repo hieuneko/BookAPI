@@ -60,7 +60,7 @@ public class JwtTokenService {
                 UUID.fromString(claimId),
                 claims.getSubject(),
                 Arrays.stream(split(claimRoles, ","))
-                        .map(SimpleGrantedAuthority::new)
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                         .toList()
         );
     }
