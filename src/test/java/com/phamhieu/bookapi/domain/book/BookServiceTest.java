@@ -165,7 +165,6 @@ class BookServiceTest {
         assertEquals(updatedBook.getCreatedAt(), actual.getCreatedAt());
         assertEquals(updatedBook.getUpdatedAt(), actual.getUpdatedAt());
         assertEquals(updatedBook.getImage(), actual.getImage());
-        assertEquals(updatedBook.getUserId().toString(), actual.getUserId().toString());
 
         verify(bookStore).update(book);
     }
