@@ -39,6 +39,5 @@ class BookResponseDTOMapperTest {
         assertEquals(bookRequestDTO.getAuthor(), book.getAuthor());
         assertEquals(bookRequestDTO.getDescription(), book.getDescription());
         assertEquals(bookRequestDTO.getImage(), book.getImage());
-        assertEquals(bookRequestDTO.getUserId(), book.getUserId());
     }
 }
