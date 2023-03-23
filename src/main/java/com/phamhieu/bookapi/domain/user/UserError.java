@@ -23,6 +23,6 @@ public class UserError {
     }
 
     public static Supplier<BadRequestException> supplyNotEnoughInformation(final String field) {
-        return () -> new BadRequestException("Information isn't not enough, " + field + " must be required");
+        return () -> new BadRequestException("Information isn't not enough, %s must be required", field);
     }
 }

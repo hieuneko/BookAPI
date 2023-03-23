@@ -1,6 +1,5 @@
 package com.phamhieu.bookapi.domain.user;
 
-import com.phamhieu.bookapi.domain.user.User;
 import lombok.experimental.UtilityClass;
 
 import static com.phamhieu.bookapi.domain.user.UserError.supplyNotEnoughInformation;

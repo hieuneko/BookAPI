@@ -1,8 +1,11 @@
 package com.phamhieu.bookapi.domain.book;
 
+import com.phamhieu.bookapi.domain.auth.AuthsProvider;
 import com.phamhieu.bookapi.persistence.book.BookStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import static com.phamhieu.bookapi.domain.auth.AuthError.supplyBookAccessDenied;
 import static com.phamhieu.bookapi.domain.book.BookValidation.*;
 
 import java.time.Instant;
@@ -16,6 +19,8 @@ import static com.phamhieu.bookapi.domain.book.BookError.*;
 public class BookService {
 
     private final BookStore bookStore;
+
+    private final AuthsProvider authsProvider;
 
     public List<Book> findAll() {
         return bookStore.findAll();
@@ -33,13 +38,15 @@ public class BookService {
     public Book create(final Book book) {
         validateBook(book);
 
+        book.setUserId(authsProvider.getCurrentAuthentication().getUserId());
         book.setCreatedAt(Instant.now());
         return bookStore.create(book);
     }
 
     public Book update(final UUID bookId, final Book book) {
-        validateBook(book);
+        validatePermissionWhenChangeBook(book.getUserId());
 
+        validateBook(book);
         final Book existingBook = findById(bookId);
         existingBook.setTitle(book.getTitle());
         existingBook.setAuthor(book.getAuthor());
@@ -53,6 +60,15 @@ public class BookService {
 
     public void delete(final UUID bookId) {
         final Book book = findById(bookId);
+        validatePermissionWhenChangeBook(book.getUserId());
+
         bookStore.delete(book.getId());
+    }
+
+    private void validatePermissionWhenChangeBook(final UUID userId) {
+        if (authsProvider.getCurrentRole().equals("CONTRIBUTOR") &&
+                !authsProvider.getCurrentUserId().equals(userId)) {
+            throw supplyBookAccessDenied().get();
+        }
     }
 }
