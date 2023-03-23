@@ -127,8 +127,8 @@ class BookControllerTest extends AbstractControllerTest {
     @WithMockAdmin
     void shouldUpdate_Ok() throws Exception {
         final var book = buildBook();
-        final var updatedBook = buildBook()
-                .withId(book.getId());
+        final var updatedBook = buildBook();
+        updatedBook.setId(book.getId());
 
         when(bookService.update(eq(book.getId()), any(Book.class))).thenReturn(updatedBook);
 
