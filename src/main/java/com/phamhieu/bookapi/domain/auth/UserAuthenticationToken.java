@@ -17,8 +17,11 @@ public class UserAuthenticationToken extends UsernamePasswordAuthenticationToken
     private final String avatar;
     private final String role;
 
-    public UserAuthenticationToken(final UUID userId, final String username, final String fistName,
-                                   final String lastName, final String avatar,
+    public UserAuthenticationToken(final UUID userId,
+                                   final String username,
+                                   final String fistName,
+                                   final String lastName,
+                                   final String avatar,
                                    final Collection<? extends GrantedAuthority> authorities) {
         super(userId, username, authorities);
         this.userId = userId;

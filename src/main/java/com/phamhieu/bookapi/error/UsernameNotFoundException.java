@@ -1,7 +1,5 @@
 package com.phamhieu.bookapi.error;
 
-import org.springframework.http.HttpStatus;
-
 import static java.lang.String.format;
 
 public class UsernameNotFoundException extends NotFoundException{

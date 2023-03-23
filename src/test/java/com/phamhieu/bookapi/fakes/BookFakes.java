@@ -61,7 +61,6 @@ public class BookFakes {
                 .author(randomAlphabetic(3, 10))
                 .description(randomAlphabetic(3, 10))
                 .image(randomAlphabetic(3, 10))
-                .userId(randomUUID())
                 .build();
     }
 }

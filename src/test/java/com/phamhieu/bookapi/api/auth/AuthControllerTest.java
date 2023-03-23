@@ -10,7 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 
-import static com.phamhieu.bookapi.fakes.AuthFakes.buildAuthentication;
+import static com.phamhieu.bookapi.fakes.AuthenticationFakes.buildAuthentication;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;

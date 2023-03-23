@@ -10,7 +10,7 @@ import java.util.Collections;
 import static com.phamhieu.bookapi.fakes.UserFakes.buildUserEntity;
 
 @UtilityClass
-public class AuthFakes {
+public class AuthenticationFakes {
 
     public static Authentication buildAuthentication() {
         final var userEntity = buildUserEntity();

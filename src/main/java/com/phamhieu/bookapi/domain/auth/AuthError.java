@@ -1,7 +1,6 @@
 package com.phamhieu.bookapi.domain.auth;
 
 import com.phamhieu.bookapi.error.ForbiddenException;
-import com.phamhieu.bookapi.error.NotFoundException;
 import lombok.experimental.UtilityClass;
 
 import java.util.function.Supplier;
