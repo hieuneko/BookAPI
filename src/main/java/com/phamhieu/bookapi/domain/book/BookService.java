@@ -44,7 +44,7 @@ public class BookService {
     }
 
     public Book update(final UUID bookId, final Book book) {
-        validatePermissionWhenChangeBook(book.getUserId());
+        validatePermissionWhenChangeBook(book);
 
         validateBook(book);
         final Book existingBook = findById(bookId);
@@ -53,21 +53,20 @@ public class BookService {
         existingBook.setDescription(book.getDescription());
         existingBook.setUpdatedAt(Instant.now());
         existingBook.setImage(book.getImage());
-        existingBook.setUserId(book.getUserId());
 
         return bookStore.update(existingBook);
     }
 
     public void delete(final UUID bookId) {
         final Book book = findById(bookId);
-        validatePermissionWhenChangeBook(book.getUserId());
+        validatePermissionWhenChangeBook(book);
 
         bookStore.delete(book.getId());
     }
 
-    private void validatePermissionWhenChangeBook(final UUID userId) {
+    private void validatePermissionWhenChangeBook(final Book book) {
         if (authsProvider.getCurrentRole().equals("CONTRIBUTOR") &&
-                !authsProvider.getCurrentUserId().equals(userId)) {
+                !authsProvider.getCurrentUserId().equals(book.getUserId())) {
             throw supplyBookAccessDenied().get();
         }
     }
