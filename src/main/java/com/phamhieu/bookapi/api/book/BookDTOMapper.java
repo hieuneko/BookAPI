@@ -1,12 +1,15 @@
 package com.phamhieu.bookapi.api.book;
 
 import com.phamhieu.bookapi.domain.book.Book;
+import lombok.experimental.UtilityClass;
 
 import java.util.List;
 
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 
+@UtilityClass
 public class BookDTOMapper {
+
     public static BookResponseDTO toBookResponseDTO(final Book book) {
         return BookResponseDTO.builder()
                 .id(book.getId())
@@ -33,7 +36,6 @@ public class BookDTOMapper {
                 .author(bookRequestDTO.getAuthor())
                 .description(bookRequestDTO.getDescription())
                 .image(bookRequestDTO.getImage())
-                .userId(bookRequestDTO.getUserId())
                 .build();
     }
 }

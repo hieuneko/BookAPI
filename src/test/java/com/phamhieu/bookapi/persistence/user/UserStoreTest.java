@@ -43,11 +43,21 @@ class UserStoreTest {
     @Test
     void shouldFindById_OK() {
         final var user = buildUserEntity();
-        final var userOpt = Optional.of(user);
-        when(userRepository.findById(user.getId()))
-                .thenReturn(userOpt);
+        final var userOptional = Optional.of(user);
 
-        assertEquals(userOpt, userRepository.findById(user.getId()));
+        when(userRepository.findById(user.getId())).thenReturn(userOptional);
+
+        final var actual = userStore.findById(user.getId()).get();
+        final var expected = userOptional.get();
+
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getFirstName(), actual.getFirstName());
+        assertEquals(expected.getUsername(), actual.getUsername());
+        assertEquals(expected.getLastName(), actual.getLastName());
+        assertEquals(expected.getAvatar(), actual.getAvatar());
+        assertEquals(expected.isEnabled(), actual.isEnabled());
+        assertEquals(expected.getRoleId(), actual.getRoleId());
+
         verify(userRepository).findById(user.getId());
     }
 
@@ -65,11 +75,21 @@ class UserStoreTest {
     @Test
     void shouldFindByUsername_OK() {
         final var user = buildUserEntity();
-        final var userOpt = Optional.of(user);
-        when(userRepository.findByUsername(user.getUsername()))
-                .thenReturn(userOpt);
+        final var userOptional = Optional.of(user);
 
-        assertEquals(userOpt, userRepository.findByUsername(user.getUsername()));
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(userOptional);
+
+        final var actual = userStore.findByUsername(user.getUsername()).get();
+        final var expected = userOptional.get();
+
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getFirstName(), actual.getFirstName());
+        assertEquals(expected.getUsername(), actual.getUsername());
+        assertEquals(expected.getLastName(), actual.getLastName());
+        assertEquals(expected.getAvatar(), actual.getAvatar());
+        assertEquals(expected.isEnabled(), actual.isEnabled());
+        assertEquals(expected.getRoleId(), actual.getRoleId());
+
         verify(userRepository).findByUsername(user.getUsername());
     }
 

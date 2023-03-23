@@ -9,6 +9,7 @@ import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 
 @UtilityClass
 public class UserDTOMapper {
+
     public static UserResponseDTO toUserResponseDTO(final User user) {
         return UserResponseDTO.builder()
                 .id(user.getId())

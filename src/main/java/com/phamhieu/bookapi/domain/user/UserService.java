@@ -1,12 +1,12 @@
 package com.phamhieu.bookapi.domain.user;
 
+import com.phamhieu.bookapi.domain.auth.AuthsProvider;
+import com.phamhieu.bookapi.domain.auth.UserAuthenticationToken;
 import com.phamhieu.bookapi.persistence.user.UserStore;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.xml.bind.DatatypeConverter;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
@@ -23,8 +23,9 @@ public class UserService {
 
     private final UserStore userStore;
 
-    @Value("${security.encode}")
-    private String appSecurityCode;
+    private final AuthsProvider authsProvider;
+
+    private final PasswordEncoder passwordEncoder;
 
     public List<User> findAll() {
         return userStore.findAll();
@@ -39,32 +40,40 @@ public class UserService {
         return userStore.find(userName);
     }
 
+    public User findProfile() {
+        return toUserFromToken(authsProvider.getCurrentAuthentication());
+    }
+
     public User create(final User user) throws NoSuchAlgorithmException {
         validateUserInfoCreate(user);
 
         verifyUsernameIfAvailable(user.getUsername());
 
-        user.setPassword(hashPassword(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userStore.create(user);
     }
 
-    public User update(final UUID userId, final User user) throws NoSuchAlgorithmException {
+    public User update(final UUID userId, final User user) {
         validateUserInfoUpdate(user);
-        final User tempUser = findById(userId);
-        if (!equalsIgnoreCase(tempUser.getUsername(), user.getUsername())) {
+        final User existUser = findById(userId);
+        if (!equalsIgnoreCase(existUser.getUsername(), user.getUsername())) {
             verifyUsernameIfAvailable(user.getUsername());
-            tempUser.setUsername(user.getUsername());
+            existUser.setUsername(user.getUsername());
         }
 
         if (isNotBlank(user.getPassword())) {
-            tempUser.setPassword(hashPassword(user.getPassword()));
+            existUser.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        tempUser.setFirstName(user.getFirstName());
-        tempUser.setLastName(user.getLastName());
-        tempUser.setEnabled(user.isEnabled());
-        tempUser.setAvatar(user.getAvatar());
-        tempUser.setRoleId(user.getRoleId());
-        return userStore.update(tempUser);
+        existUser.setFirstName(user.getFirstName());
+        existUser.setLastName(user.getLastName());
+        existUser.setEnabled(user.isEnabled());
+        existUser.setAvatar(user.getAvatar());
+        existUser.setRoleId(user.getRoleId());
+        return userStore.update(existUser);
+    }
+
+    public User updateProfile(final User user) {
+        return update(authsProvider.getCurrentUserId(), user);
     }
 
     public void delete(final UUID userId) {
@@ -78,10 +87,13 @@ public class UserService {
         }
     }
 
-    private String hashPassword(final String password) throws NoSuchAlgorithmException {
-        final MessageDigest md5 = MessageDigest.getInstance("MD5");
-        md5.update((password + appSecurityCode).getBytes());
-        final byte[] digest = md5.digest();
-        return DatatypeConverter.printHexBinary(digest).toUpperCase();
+    private User toUserFromToken(final UserAuthenticationToken userAuthenticationToken) {
+        return User.builder()
+                .id(userAuthenticationToken.getUserId())
+                .username(userAuthenticationToken.getUsername())
+                .firstName(userAuthenticationToken.getFistName())
+                .lastName(userAuthenticationToken.getLastName())
+                .avatar(userAuthenticationToken.getAvatar())
+                .build();
     }
 }

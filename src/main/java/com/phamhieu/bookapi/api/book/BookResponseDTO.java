@@ -8,10 +8,10 @@ import lombok.Setter;
 import java.time.Instant;
 import java.util.UUID;
 
-@Setter
 @Getter
 @Builder
 public class BookResponseDTO {
+
     private UUID id;
     private String title;
     private String author;

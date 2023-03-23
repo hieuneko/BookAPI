@@ -11,7 +11,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-@With
 public class Book {
 
     private UUID id;

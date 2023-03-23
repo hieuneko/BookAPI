@@ -3,6 +3,7 @@ package com.phamhieu.bookapi.api.user;
 import com.phamhieu.bookapi.domain.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
@@ -15,6 +16,7 @@ import static com.phamhieu.bookapi.api.user.UserDTOMapper.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
+@PreAuthorize("hasAnyRole('ADMIN')")
 public class UserController {
 
     private final UserService userService;
