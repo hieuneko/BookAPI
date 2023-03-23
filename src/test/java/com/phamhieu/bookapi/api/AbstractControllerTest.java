@@ -27,26 +27,20 @@ public abstract class AbstractControllerTest {
     }
 
     protected ResultActions post(final String url, final Object object) throws Exception {
-        return mvc.perform(MockMvcRequestBuilders.post(url)
-                .with(csrf())
-                .contentType(MediaType.APPLICATION_JSON)
+        return perform(MockMvcRequestBuilders.post(url)
                 .content(objectMapper.writeValueAsString(object)));
     }
 
     protected ResultActions put(final String url, final Object object) throws Exception {
-        return mvc.perform(MockMvcRequestBuilders.put(url)
-                .with(csrf())
-                .contentType(MediaType.APPLICATION_JSON)
+        return perform(MockMvcRequestBuilders.put(url)
                 .content(objectMapper.writeValueAsString(object)));
     }
 
     protected ResultActions delete(final String url) throws Exception {
-        return mvc.perform(MockMvcRequestBuilders.delete(url)
-                .with(csrf())
-                .contentType(MediaType.APPLICATION_JSON));
+        return perform(MockMvcRequestBuilders.delete(url));
     }
 
     private ResultActions perform(final MockHttpServletRequestBuilder mockHttpServletRequestBuilder) throws Exception {
-        return mvc.perform(mockHttpServletRequestBuilder.contentType(MediaType.APPLICATION_JSON));
+        return mvc.perform(mockHttpServletRequestBuilder.with(csrf()).contentType(MediaType.APPLICATION_JSON));
     }
 }

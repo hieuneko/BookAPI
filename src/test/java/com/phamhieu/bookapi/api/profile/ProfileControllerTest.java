@@ -3,8 +3,8 @@ package com.phamhieu.bookapi.api.profile;
 import com.phamhieu.bookapi.api.AbstractControllerTest;
 import com.phamhieu.bookapi.api.WithMockContributor;
 import com.phamhieu.bookapi.domain.auth.AuthsProvider;
-import com.phamhieu.bookapi.domain.profile.ProfileService;
 import com.phamhieu.bookapi.domain.user.User;
+import com.phamhieu.bookapi.domain.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -29,7 +29,7 @@ class ProfileControllerTest extends AbstractControllerTest {
     private AuthsProvider authsProvider;
 
     @MockBean
-    private ProfileService profileService;
+    private UserService userService;
 
     @BeforeEach
     void init() {
@@ -41,7 +41,7 @@ class ProfileControllerTest extends AbstractControllerTest {
     void shouldGetProfile_OK() throws Exception {
         final var profile = buildUser();
 
-        when(profileService.findProfile())
+        when(userService.findProfile())
                 .thenReturn(profile);
 
         get(BASE_URL)
@@ -50,7 +50,7 @@ class ProfileControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$.lastName").value(profile.getLastName()))
                 .andExpect(jsonPath("$.avatar").value(profile.getAvatar()));
 
-        verify(profileService).findProfile();
+        verify(userService).findProfile();
     }
 
     @Test
@@ -60,7 +60,7 @@ class ProfileControllerTest extends AbstractControllerTest {
         final var updatedProfile = buildUser();
         updatedProfile.setId(profile.getId());
 
-        when(profileService.update(any(User.class))).thenReturn(updatedProfile);
+        when(userService.updateProfile(any(User.class))).thenReturn(updatedProfile);
 
         put(BASE_URL, toProfileResponseDTO(updatedProfile))
                 .andExpect(status().isOk())

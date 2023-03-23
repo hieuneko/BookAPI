@@ -18,6 +18,9 @@ public class AuthFakes {
                 UUID.randomUUID(),
                 randomAlphabetic(3, 10),
                 randomAlphabetic(3, 10),
+                randomAlphabetic(3, 10),
+                randomAlphabetic(3, 10),
+                randomAlphabetic(3, 10),
                 Collections.emptyList()
         );
         return new UsernamePasswordAuthenticationToken(userDetails,

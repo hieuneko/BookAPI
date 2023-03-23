@@ -9,6 +9,7 @@ import lombok.Setter;
 @Builder
 public class ProfileRequestDTO {
 
+    private String username;
     private String password;
     private String firstName;
     private String lastName;

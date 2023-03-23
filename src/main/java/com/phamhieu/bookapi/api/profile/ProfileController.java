@@ -1,6 +1,6 @@
 package com.phamhieu.bookapi.api.profile;
 
-import com.phamhieu.bookapi.domain.profile.ProfileService;
+import com.phamhieu.bookapi.domain.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,18 +17,17 @@ import static com.phamhieu.bookapi.api.profile.ProfileDTOMapper.toUser;
 @PreAuthorize("hasAnyRole('ADMIN', 'CONTRIBUTOR')")
 public class ProfileController {
 
-
-    private final ProfileService profileService;
+    private final UserService userService;
 
     @Operation(summary = "Find user profile")
     @GetMapping
     public ProfileResponseDTO find() {
-        return toProfileResponseDTO(profileService.findProfile());
+        return toProfileResponseDTO(userService.findProfile());
     }
 
     @Operation(summary = "Update user profile")
     @PutMapping
     public ProfileResponseDTO update(@RequestBody ProfileRequestDTO profileRequestDTO) {
-        return toProfileResponseDTO(profileService.update(toUser(profileRequestDTO)));
+        return toProfileResponseDTO(userService.updateProfile(toUser(profileRequestDTO)));
     }
 }

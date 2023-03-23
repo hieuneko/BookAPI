@@ -14,6 +14,9 @@ public class UserAuthenticationTokenFakes {
         return new UserAuthenticationToken(
                 UUID.fromString("10c524a3-3225-4817-8277-f73578d36a05"),
                 "admin",
+                "test",
+                "test",
+                "avatar.png",
                 List.of(new SimpleGrantedAuthority("ADMIN")));
     }
 
@@ -21,6 +24,9 @@ public class UserAuthenticationTokenFakes {
         return new UserAuthenticationToken(
                 UUID.fromString("52aed357-9a77-432c-80b6-7bfdc34d46e7"),
                 "user",
+                "test",
+                "test",
+                "avatar.png",
                 List.of(new SimpleGrantedAuthority("CONTRIBUTOR")));
     }
 }

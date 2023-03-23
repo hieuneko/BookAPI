@@ -1,6 +1,7 @@
 package com.phamhieu.bookapi.domain.auth;
 
 import com.phamhieu.bookapi.persistence.role.RoleStore;
+import com.phamhieu.bookapi.persistence.user.UserEntity;
 import com.phamhieu.bookapi.persistence.user.UserStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,9 +29,10 @@ public class JwtUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User with username: " + username+" not be found"));
     }
 
-    private User buildUser(final com.phamhieu.bookapi.persistence.user.UserEntity userEntity) {
+    private User buildUser(final UserEntity userEntity) {
         final String role = roleStore.findRoleName(userEntity.getRoleId());
         return new JwtUserDetails(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword(),
+                userEntity.getFirstName(), userEntity.getLastName(), userEntity.getAvatar(),
                 List.of(new SimpleGrantedAuthority(role)));
     }
 }

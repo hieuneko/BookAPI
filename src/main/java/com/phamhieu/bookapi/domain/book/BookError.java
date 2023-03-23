@@ -1,7 +1,6 @@
 package com.phamhieu.bookapi.domain.book;
 
 import com.phamhieu.bookapi.error.BadRequestException;
-import com.phamhieu.bookapi.error.DomainException;
 import com.phamhieu.bookapi.error.NotFoundException;
 import lombok.experimental.UtilityClass;
 
@@ -16,6 +15,6 @@ public class BookError {
     }
 
     public static Supplier<BadRequestException> supplyNotEnoughInformation(final String field) {
-        return () -> new BadRequestException("Information isn't not enough, " + field + " must be required");
+        return () -> new BadRequestException("Information isn't not enough, %s must be required", field);
     }
 }

@@ -1,10 +1,10 @@
 package com.phamhieu.bookapi.domain.user;
 
+import com.phamhieu.bookapi.domain.auth.AuthsProvider;
 import com.phamhieu.bookapi.error.BadRequestException;
 import com.phamhieu.bookapi.error.NotFoundException;
 import com.phamhieu.bookapi.persistence.user.UserStore;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,12 +13,14 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Optional;
 
+import static com.phamhieu.bookapi.fakes.UserAuthenticationTokenFakes.buildAdmin;
+import static com.phamhieu.bookapi.fakes.UserAuthenticationTokenFakes.buildContributor;
 import static com.phamhieu.bookapi.fakes.UserFakes.buildUser;
 import static com.phamhieu.bookapi.fakes.UserFakes.buildUsers;
 import static java.util.UUID.randomUUID;
@@ -35,16 +37,14 @@ class UserServiceTest {
     @Mock
     private UserStore userStore;
 
+    @Mock
+    private AuthsProvider authsProvider;
+
     @InjectMocks
     private UserService userService;
 
     @Spy
-    BCryptPasswordEncoder passwordEncoder;
-
-    @BeforeEach
-    void setUp() {
-        passwordEncoder = new BCryptPasswordEncoder();
-    }
+    private PasswordEncoder passwordEncoder;
 
     @Test
     void shouldFindAll_OK() {
@@ -115,6 +115,30 @@ class UserServiceTest {
 
         assertTrue(userService.find(name).isEmpty());
         verify(userStore).find(name);
+    }
+
+    @Test
+    void shouldFindProfile_OK() {
+        final var user = buildUser();
+        user.setId(buildContributor().getUserId());
+        user.setUsername(buildContributor().getUsername());
+        user.setFirstName(buildContributor().getFistName());
+        user.setLastName(buildContributor().getLastName());
+        user.setAvatar(buildContributor().getAvatar());
+
+        when(authsProvider.getCurrentUserId()).thenReturn(buildContributor().getUserId());
+        when(authsProvider.getCurrentUsername()).thenReturn(buildContributor().getUsername());
+        when(authsProvider.getCurrentFirstName()).thenReturn(buildContributor().getFistName());
+        when(authsProvider.getCurrentLastName()).thenReturn(buildContributor().getLastName());
+        when(authsProvider.getCurrentAvatar()).thenReturn(buildContributor().getAvatar());
+
+        final var actual = userService.findProfile();
+
+        assertEquals(user.getId(), actual.getId());
+        assertEquals(user.getUsername(), actual.getUsername());
+        assertEquals(user.getFirstName(), actual.getFirstName());
+        assertEquals(user.getLastName(), actual.getLastName());
+        assertEquals(user.getAvatar(), actual.getAvatar());
     }
 
     @Test
@@ -239,6 +263,32 @@ class UserServiceTest {
         assertThrows(BadRequestException.class, () -> userService.update(user.getId(), userUpdate));
 
         verify(userStore, never()).update(userUpdate);
+    }
+
+    @Test
+    void shouldUpdateProfile_OK() {
+        final var user = buildUser();
+
+        when(authsProvider.getCurrentUserId()).thenReturn(buildAdmin().getUserId());
+        when(authsProvider.getCurrentRole()).thenReturn(buildAdmin().getRole());
+        user.setPassword(randomAlphabetic(6, 10));
+        user.setId(buildAdmin().getUserId());
+
+        when(userStore.update(user)).thenReturn(user);
+        when(userStore.findById(user.getId())).thenReturn(Optional.of(user));
+
+        final var actual = userService.updateProfile(user);
+
+        assertEquals(user.getId().toString(), actual.getId().toString());
+        assertEquals(user.getUsername(), actual.getUsername());
+        assertEquals(user.getFirstName(), actual.getFirstName());
+        assertEquals(user.getLastName(), actual.getLastName());
+        assertEquals(user.getAvatar(), actual.getAvatar());
+        assertEquals(user.getRoleId().toString(), actual.getRoleId().toString());
+        assertEquals(user.isEnabled(), actual.isEnabled());
+
+        verify(userStore).update(user);
+        verify(userStore).findById(user.getId());
     }
 
     @Test

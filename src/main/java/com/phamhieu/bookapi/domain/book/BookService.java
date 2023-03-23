@@ -1,12 +1,11 @@
 package com.phamhieu.bookapi.domain.book;
 
 import com.phamhieu.bookapi.domain.auth.AuthsProvider;
-import com.phamhieu.bookapi.domain.auth.UserAuthenticationToken;
 import com.phamhieu.bookapi.persistence.book.BookStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.phamhieu.bookapi.domain.auth.AuthError.supplyAuthorizationAccessNeeded;
+import static com.phamhieu.bookapi.domain.auth.AuthError.supplyBookAccessDenied;
 import static com.phamhieu.bookapi.domain.book.BookValidation.*;
 
 import java.time.Instant;
@@ -39,13 +38,13 @@ public class BookService {
     public Book create(final Book book) {
         validateBook(book);
 
-        book.setUserId(getCurrentToken().getUserId());
+        book.setUserId(authsProvider.getCurrentAuthentication().getUserId());
         book.setCreatedAt(Instant.now());
         return bookStore.create(book);
     }
 
     public Book update(final UUID bookId, final Book book) {
-        validateAuthPermission(book.getUserId());
+        validatePermissionWhenChangeBook(book.getUserId());
 
         validateBook(book);
         final Book existingBook = findById(bookId);
@@ -61,19 +60,15 @@ public class BookService {
 
     public void delete(final UUID bookId) {
         final Book book = findById(bookId);
-        validateAuthPermission(book.getUserId());
+        validatePermissionWhenChangeBook(book.getUserId());
 
         bookStore.delete(book.getId());
     }
 
-    private UserAuthenticationToken getCurrentToken() {
-        return authsProvider.getCurrentAuthentication();
-    }
-
-    private void validateAuthPermission(final UUID userId) {
-        if (getCurrentToken().getRole().equals("CONTRIBUTOR") &&
-                !getCurrentToken().getUserId().equals(userId)) {
-            throw supplyAuthorizationAccessNeeded().get();
+    private void validatePermissionWhenChangeBook(final UUID userId) {
+        if (authsProvider.getCurrentRole().equals("CONTRIBUTOR") &&
+                !authsProvider.getCurrentUserId().equals(userId)) {
+            throw supplyBookAccessDenied().get();
         }
     }
 }
