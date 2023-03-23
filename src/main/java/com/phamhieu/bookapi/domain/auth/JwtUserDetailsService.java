@@ -1,5 +1,6 @@
 package com.phamhieu.bookapi.domain.auth;
 
+import com.phamhieu.bookapi.error.UsernameNotFoundException;
 import com.phamhieu.bookapi.persistence.role.RoleStore;
 import com.phamhieu.bookapi.persistence.user.UserEntity;
 import com.phamhieu.bookapi.persistence.user.UserStore;
@@ -8,7 +9,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import static com.phamhieu.bookapi.persistence.user.UserEntityMapper.*;
@@ -26,7 +26,7 @@ public class JwtUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userStore.findByUsername(username)
                 .map(user -> buildUser(toUserEntity(user)))
-                .orElseThrow(() -> new UsernameNotFoundException("User with username: " + username+" not be found"));
+                .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
     private User buildUser(final UserEntity userEntity) {

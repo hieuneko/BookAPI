@@ -128,9 +128,17 @@ class BookServiceTest {
     }
 
     @Test
-    void shouldCreate_ThrowBadRequest() {
+    void shouldCreate_ThrowTitleNull() {
         final var expected = buildBook();
         expected.setTitle(null);
+
+        assertThrows(BadRequestException.class, () -> bookService.create(expected));
+    }
+
+    @Test
+    void shouldCreate_ThrowAuthorNull() {
+        final var expected = buildBook();
+        expected.setAuthor(null);
 
         assertThrows(BadRequestException.class, () -> bookService.create(expected));
     }
