@@ -64,19 +64,8 @@ public class JwtTokenService {
         }
 
         final String claimFirstName = claims.get(CLAIM_FIRST_NAME, String.class);
-        if (isBlank(claimFirstName)) {
-            return null;
-        }
-
         final String claimLastName = claims.get(CLAIM_LAST_NAME, String.class);
-        if (isBlank(claimLastName)) {
-            return null;
-        }
-
         final String claimAvatar = claims.get(CLAIM_AVATAR, String.class);
-        if (isBlank(claimAvatar)) {
-            return null;
-        }
 
         return new UserAuthenticationToken(
                 UUID.fromString(claimId),

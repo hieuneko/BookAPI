@@ -31,16 +31,4 @@ public class AuthsProvider {
     public String getCurrentRole() {
         return getCurrentAuthentication().getRole();
     }
-
-    public String getCurrentFirstName() {
-        return getCurrentAuthentication().getFistName();
-    }
-
-    public String getCurrentLastName() {
-        return getCurrentAuthentication().getLastName();
-    }
-
-    public String getCurrentAvatar() {
-        return getCurrentAuthentication().getAvatar();
-    }
 }

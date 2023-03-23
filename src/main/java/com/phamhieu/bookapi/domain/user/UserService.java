@@ -1,6 +1,7 @@
 package com.phamhieu.bookapi.domain.user;
 
 import com.phamhieu.bookapi.domain.auth.AuthsProvider;
+import com.phamhieu.bookapi.domain.auth.UserAuthenticationToken;
 import com.phamhieu.bookapi.persistence.user.UserStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,13 +41,7 @@ public class UserService {
     }
 
     public User findProfile() {
-        return User.builder()
-                .id(authsProvider.getCurrentUserId())
-                .username(authsProvider.getCurrentUsername())
-                .firstName(authsProvider.getCurrentFirstName())
-                .lastName(authsProvider.getCurrentLastName())
-                .avatar(authsProvider.getCurrentAvatar())
-                .build();
+        return toUserFromToken(authsProvider.getCurrentAuthentication());
     }
 
     public User create(final User user) throws NoSuchAlgorithmException {
@@ -90,5 +85,15 @@ public class UserService {
         if (userOptional.isPresent()) {
             throw supplyUserExist(username).get();
         }
+    }
+
+    private User toUserFromToken(final UserAuthenticationToken userAuthenticationToken) {
+        return User.builder()
+                .id(userAuthenticationToken.getUserId())
+                .username(userAuthenticationToken.getUsername())
+                .firstName(userAuthenticationToken.getFistName())
+                .lastName(userAuthenticationToken.getLastName())
+                .avatar(userAuthenticationToken.getAvatar())
+                .build();
     }
 }

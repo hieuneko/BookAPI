@@ -126,11 +126,7 @@ class UserServiceTest {
         user.setLastName(buildContributor().getLastName());
         user.setAvatar(buildContributor().getAvatar());
 
-        when(authsProvider.getCurrentUserId()).thenReturn(buildContributor().getUserId());
-        when(authsProvider.getCurrentUsername()).thenReturn(buildContributor().getUsername());
-        when(authsProvider.getCurrentFirstName()).thenReturn(buildContributor().getFistName());
-        when(authsProvider.getCurrentLastName()).thenReturn(buildContributor().getLastName());
-        when(authsProvider.getCurrentAvatar()).thenReturn(buildContributor().getAvatar());
+        when(authsProvider.getCurrentAuthentication()).thenReturn(buildContributor());
 
         final var actual = userService.findProfile();
 
