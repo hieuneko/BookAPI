@@ -11,6 +11,7 @@ import java.util.UUID;
 @Getter
 @Builder
 public class BookResponseDTO {
+
     private UUID id;
     private String title;
     private String author;
