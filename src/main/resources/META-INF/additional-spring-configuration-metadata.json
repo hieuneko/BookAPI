@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "firebase.project.id",
+      "type": "java.lang.String",
+      "description": "Description for firebase.project.id."
+  }
+] }
