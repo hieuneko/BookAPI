@@ -27,7 +27,7 @@ public class JwtUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
-    private User buildUser(final com.phamhieu.bookapi.domain.user.User user) {
+    private UserDetails buildUser(final com.phamhieu.bookapi.domain.user.User user) {
         final String role = roleStore.findRoleName(user.getRoleId());
         return new JwtUserDetails(user,
                 List.of(new SimpleGrantedAuthority(role)));
