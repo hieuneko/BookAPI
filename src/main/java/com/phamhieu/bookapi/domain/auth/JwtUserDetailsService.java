@@ -1,17 +1,15 @@
 package com.phamhieu.bookapi.domain.auth;
 
-import com.phamhieu.bookapi.error.UsernameNotFoundException;
+
 import com.phamhieu.bookapi.persistence.role.RoleStore;
-import com.phamhieu.bookapi.persistence.user.UserEntity;
 import com.phamhieu.bookapi.persistence.user.UserStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import static com.phamhieu.bookapi.persistence.user.UserEntityMapper.*;
 
 import java.util.List;
 
@@ -25,13 +23,13 @@ public class JwtUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userStore.findByUsername(username)
-                .map(user -> buildUser(toUserEntity(user)))
+                .map(this::buildUser)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
-    private User buildUser(final UserEntity userEntity) {
-        final String role = roleStore.findRoleName(userEntity.getRoleId());
-        return new JwtUserDetails(userEntity,
+    private User buildUser(final com.phamhieu.bookapi.domain.user.User user) {
+        final String role = roleStore.findRoleName(user.getRoleId());
+        return new JwtUserDetails(user,
                 List.of(new SimpleGrantedAuthority(role)));
     }
 }
