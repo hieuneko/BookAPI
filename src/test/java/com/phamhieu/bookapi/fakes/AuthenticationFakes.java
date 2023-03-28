@@ -7,15 +7,15 @@ import org.springframework.security.core.Authentication;
 
 import java.util.Collections;
 
-import static com.phamhieu.bookapi.fakes.UserFakes.buildUserEntity;
+import static com.phamhieu.bookapi.fakes.UserFakes.buildUser;
 
 @UtilityClass
 public class AuthenticationFakes {
 
     public static Authentication buildAuthentication() {
-        final var userEntity = buildUserEntity();
+        final var user = buildUser();
         final JwtUserDetails userDetails = new JwtUserDetails(
-                userEntity,
+                user,
                 Collections.emptyList()
         );
         return new UsernamePasswordAuthenticationToken(userDetails,

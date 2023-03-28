@@ -1,6 +1,5 @@
 package com.phamhieu.bookapi.domain.auth;
 
-import com.phamhieu.bookapi.persistence.user.UserEntity;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -16,12 +15,12 @@ public class JwtUserDetails extends User {
     private final String lastName;
     private final String avatar;
 
-    public JwtUserDetails(final UserEntity userEntity,
+    public JwtUserDetails(final com.phamhieu.bookapi.domain.user.User user,
                           final Collection<? extends GrantedAuthority> authorities) {
-        super(userEntity.getUsername(), userEntity.getPassword(), authorities);
-        this.userId = userEntity.getId();
-        this.firstName = userEntity.getFirstName();
-        this.lastName = userEntity.getLastName();
-        this.avatar = userEntity.getAvatar();
+        super(user.getUsername(), user.getPassword(), authorities);
+        this.userId = user.getId();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.avatar = user.getAvatar();
     }
 }
