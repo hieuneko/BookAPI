@@ -14,6 +14,6 @@ public class AuthError {
     }
 
     public static Supplier<BadRequestException> supplyProjectIdIncorrect() {
-        return () -> new BadRequestException("Your account not belong to this website");
+        return () -> new BadRequestException("Your Google account not belong to this website");
     }
 }

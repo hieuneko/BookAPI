@@ -1,14 +1,11 @@
 package com.phamhieu.bookapi.api.auth;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
-import com.phamhieu.bookapi.domain.auth.FirebaseTokenService;
+import com.phamhieu.bookapi.domain.auth.FirebaseLoginService;
 import com.phamhieu.bookapi.domain.auth.JwtTokenService;
 import com.phamhieu.bookapi.domain.auth.JwtUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +22,7 @@ public class AuthController {
 
     private final JwtTokenService jwtTokenUtil;
 
-    private final FirebaseTokenService firebaseTokenService;
+    private final FirebaseLoginService firebaseLoginService;
 
     private final AuthenticationManager authenticationManager;
 
@@ -42,11 +39,9 @@ public class AuthController {
     @Operation(summary = "User login by google account")
     @PostMapping("/google")
     public JwtTokenResponseDTO loginGoogle(@RequestBody TokenRequestDTO tokenRequestDTO) throws FirebaseAuthException {
-        final FirebaseToken decodedToken = FirebaseAuth.getInstance()
-                .verifyIdToken(tokenRequestDTO.getIdToken());
 
         return JwtTokenResponseDTO.builder()
-                .token(jwtTokenUtil.generateToken((JwtUserDetails) firebaseTokenService.loginGoogle(decodedToken)))
+                .token(jwtTokenUtil.generateToken((JwtUserDetails) firebaseLoginService.loginGoogle(tokenRequestDTO.getIdToken())))
                 .build();
     }
 }

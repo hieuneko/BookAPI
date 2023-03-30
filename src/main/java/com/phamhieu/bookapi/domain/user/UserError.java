@@ -25,4 +25,8 @@ public class UserError {
     public static Supplier<BadRequestException> supplyNotEnoughInformation(final String field) {
         return () -> new BadRequestException("Information isn't not enough, %s must be required", field);
     }
+
+    public static Supplier<NotFoundException> supplyUserGoogleNotInSystem(final String email) {
+        return () -> new NotFoundException("User has email %s not been found in system", email);
+    }
 }
