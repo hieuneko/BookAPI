@@ -31,17 +31,19 @@ public class AuthController {
     public JwtTokenResponseDTO login(@RequestBody LoginDTO loginDTO) {
         final Authentication authentication = authenticationManager.authenticate(toAuthentication(loginDTO));
 
-        return JwtTokenResponseDTO.builder()
-                .token(jwtTokenUtil.generateToken((JwtUserDetails) authentication.getPrincipal()))
-                .build();
+        return generateToken((JwtUserDetails) authentication.getPrincipal());
     }
 
     @Operation(summary = "User login by google account")
     @PostMapping("/google")
     public JwtTokenResponseDTO loginGoogle(@RequestBody TokenRequestDTO tokenRequestDTO) throws FirebaseAuthException {
 
+        return generateToken((JwtUserDetails) firebaseLoginService.loginGoogle(tokenRequestDTO.getIdToken()));
+    }
+
+    private JwtTokenResponseDTO generateToken(final JwtUserDetails jwtUserDetails) {
         return JwtTokenResponseDTO.builder()
-                .token(jwtTokenUtil.generateToken((JwtUserDetails) firebaseLoginService.loginGoogle(tokenRequestDTO.getIdToken())))
+                .token(jwtTokenUtil.generateToken(jwtUserDetails))
                 .build();
     }
 }

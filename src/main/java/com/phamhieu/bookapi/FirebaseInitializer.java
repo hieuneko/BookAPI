@@ -15,9 +15,9 @@ public class FirebaseInitializer {
     @PostConstruct
     public void initializeFirebaseApp() throws IOException {
         if (FirebaseApp.getApps() == null || FirebaseApp.getApps().isEmpty()) {
-            InputStream serviceAccount = FirebaseInitializer.class.getResourceAsStream("/BookApiAccountKey.json");
-            GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
-            FirebaseOptions options = new FirebaseOptions.Builder()
+            final InputStream serviceAccount = FirebaseInitializer.class.getResourceAsStream("/BookApiAccountKey.json");
+            final GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
+            final FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(credentials)
                     .build();
 

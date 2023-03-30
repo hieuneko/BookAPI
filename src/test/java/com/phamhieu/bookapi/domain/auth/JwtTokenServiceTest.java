@@ -16,6 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.List;
 
 import static com.phamhieu.bookapi.fakes.UserFakes.buildUser;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -42,6 +43,16 @@ class JwtTokenServiceTest {
         assertNull(authentication);
     }
 
+    @Test
+    void shouldParse_GetSubjectNull() {
+        final String token = randomAlphabetic(3, 10);
+        final Claims claims = Jwts.claims();
+        claims.setSubject(null);
+
+        when(jwtProperties.getSecret()).thenReturn(SECRET);
+        when(Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody()).thenReturn(claims);
+
+    }
 
     @Test
     void generateToken_OK() {

@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class FirebaseTokenVerifierService {
 
-    public MyFirebaseToken verifyToken(final String token) throws FirebaseAuthException {
+    public FirebaseTokenPayload verifyToken(final String token) throws FirebaseAuthException {
         final FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(token);
         final String projectId = firebaseToken.getClaims().get("aud").toString();
         final String email = firebaseToken.getEmail();
-        return new MyFirebaseToken(projectId, email);
+        return new FirebaseTokenPayload(projectId, email);
     }
 }
