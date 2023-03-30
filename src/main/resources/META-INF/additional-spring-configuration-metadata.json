@@ -4,5 +4,15 @@
       "name": "firebase.project.id",
       "type": "java.lang.String",
       "description": "Description for firebase.project.id."
-  }
-] }
+    },
+    {
+      "name": "-Dspring.security.oauth2.client.registration.google.client-id",
+      "type": "java.lang.String",
+      "description": "Description for -Dspring.security.oauth2.client.registration.google.client-id."
+    },
+    {
+      "name": "-Dspring.security.oauth2.client.registration.google.client-secret",
+      "type": "java.lang.String",
+      "description": "Description for -Dspring.security.oauth2.client.registration.google.client-secret."
+    }
+  ] }
