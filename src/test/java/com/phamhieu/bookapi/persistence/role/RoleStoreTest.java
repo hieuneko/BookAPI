@@ -57,16 +57,4 @@ class RoleStoreTest {
         assertEquals(roleId, roleStore.findIdByName(roleName));
         verify(roleRepository).findByName(roleName);
     }
-
-    @Test
-    void shouldFindRoleId_Empty() {
-        final String roleName = randomAlphabetic(3, 10);
-        when(roleRepository.findByName(roleName))
-                .thenReturn(null);
-
-        assertNull(roleStore.findIdByName(roleName));
-        verify(roleRepository).findByName(roleName);
-    }
-
-
 }

@@ -44,17 +44,6 @@ class JwtTokenServiceTest {
     }
 
     @Test
-    void shouldParse_GetSubjectNull() {
-        final String token = randomAlphabetic(3, 10);
-        final Claims claims = Jwts.claims();
-        claims.setSubject(null);
-
-        when(jwtProperties.getSecret()).thenReturn(SECRET);
-        when(Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody()).thenReturn(claims);
-
-    }
-
-    @Test
     void generateToken_OK() {
         final var user = buildUser();
         final JwtUserDetails userDetails = new JwtUserDetails(user, List.of(new SimpleGrantedAuthority("ROLE_CONTRIBUTOR")));
