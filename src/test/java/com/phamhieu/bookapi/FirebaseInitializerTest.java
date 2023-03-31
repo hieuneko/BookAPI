@@ -14,7 +14,6 @@ class FirebaseInitializerTest {
 
     @Test
     void shouldInitializer_OK() throws IOException {
-        FirebaseApp.getApps();
         final InputStream serviceAccount = FirebaseInitializer.class.getResourceAsStream("/BookApiAccountKeyTest.json");
         final GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
         final FirebaseOptions options = new FirebaseOptions.Builder()
@@ -22,5 +21,10 @@ class FirebaseInitializerTest {
                 .build();
         FirebaseApp.initializeApp(options);
         assertNotNull(FirebaseApp.getApps());
+    }
+
+    @Test
+    public void testEmptyAppName() {
+        assertThrows(IllegalStateException.class, FirebaseApp::initializeApp);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -19,6 +20,7 @@ import static org.apache.commons.lang3.StringUtils.startsWith;
 
 @Configuration
 @RequiredArgsConstructor
+@Component
 @Profile("!TEST")
 public class JwtTokenAuthorizationFilter extends OncePerRequestFilter {
 
