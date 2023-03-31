@@ -20,7 +20,6 @@ import static org.apache.commons.lang3.StringUtils.startsWith;
 
 @Configuration
 @RequiredArgsConstructor
-@Component
 @Profile("!TEST")
 public class JwtTokenAuthorizationFilter extends OncePerRequestFilter {
 
