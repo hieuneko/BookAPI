@@ -45,7 +45,8 @@
         firebase.auth().onAuthStateChanged(function(user) {
           if (user) {
             user.getIdToken().then(function(idToken) {  // <------ Check this line
-              login(idToken)
+              console.log(idToken);
+              login(idToken);
             });
           }
         });
@@ -75,9 +76,6 @@
                 getProfile(data.token)
               }
             })
-            .catch(error => {
-              console.error("error", error);
-            });
   }
 
   function getProfile(jwtToken) {
@@ -102,8 +100,6 @@
         lastName.innerHTML = "Last name: " + userDetail.lastName;
         avatar.innerHTML = "Avatar: " + userDetail.avatar;
       }
-    }).catch(err => {
-      console.log("Error get profile user: ", err);
     })
   }
 </script>
