@@ -1,9 +1,10 @@
 package com.phamhieu.bookapi;
 
+import com.phamhieu.bookapi.configuration.JWTWebSecurityConfig;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
-@SpringBootTest(classes = {BookApiApplicationTests.class, FirebaseInitializer.class})
+@ContextConfiguration(classes = {BookApiApplicationTests.class, FirebaseInitializer.class, JWTWebSecurityConfig.class})
 class BookApiApplicationTests {
 
     @Test
