@@ -7,8 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class FirebaseTokenPayload {
+public class GoogleTokenPayload {
 
-    private String projectId;
     private String email;
+    private String firstName;
+    private String lastName;
+    private String avatar;
 }

@@ -1,7 +1,6 @@
 package com.phamhieu.bookapi.api.auth;
 
-import com.google.firebase.auth.FirebaseAuthException;
-import com.phamhieu.bookapi.domain.auth.FirebaseLoginService;
+import com.phamhieu.bookapi.domain.auth.GoogleLoginService;
 import com.phamhieu.bookapi.domain.auth.JwtTokenService;
 import com.phamhieu.bookapi.domain.auth.JwtUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +18,7 @@ public class AuthController {
 
     private final JwtTokenService jwtTokenUtil;
 
-    private final FirebaseLoginService firebaseLoginService;
+    private final GoogleLoginService googleLoginService;
 
     private final AuthenticationManager authenticationManager;
 
@@ -33,9 +32,9 @@ public class AuthController {
 
     @Operation(summary = "User login by google account")
     @PostMapping("/google")
-    public JwtTokenResponseDTO loginGoogle(@RequestBody TokenRequestDTO tokenRequestDTO) throws FirebaseAuthException {
+    public JwtTokenResponseDTO loginGoogle(@RequestBody TokenRequestDTO tokenRequestDTO) {
 
-        return generateToken((JwtUserDetails) firebaseLoginService.loginGoogle(tokenRequestDTO.getIdToken()));
+        return generateToken((JwtUserDetails) googleLoginService.loginGoogle(tokenRequestDTO.getIdToken()));
     }
 
     private JwtTokenResponseDTO generateToken(final JwtUserDetails jwtUserDetails) {

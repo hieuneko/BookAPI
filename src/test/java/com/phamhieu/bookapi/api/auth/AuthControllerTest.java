@@ -1,7 +1,7 @@
 package com.phamhieu.bookapi.api.auth;
 
 import com.phamhieu.bookapi.api.AbstractControllerTest;
-import com.phamhieu.bookapi.domain.auth.FirebaseLoginService;
+import com.phamhieu.bookapi.domain.auth.GoogleLoginService;
 import com.phamhieu.bookapi.domain.auth.JwtTokenService;
 import com.phamhieu.bookapi.domain.auth.JwtUserDetails;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class AuthControllerTest extends AbstractControllerTest {
     private JwtTokenService jwtTokenService;
 
     @MockBean
-    private FirebaseLoginService firebaseLoginService;
+    private GoogleLoginService googleLoginService;
 
     @Test
     void shouldLogin_Ok() throws Exception {
@@ -55,7 +55,7 @@ class AuthControllerTest extends AbstractControllerTest {
         final var user = buildUser();
         final JwtUserDetails userDetails = new JwtUserDetails(user, List.of(new SimpleGrantedAuthority("CONTRIBUTOR")));
 
-        when(firebaseLoginService.loginGoogle(tokenRequest.getIdToken())).thenReturn(userDetails);
+        when(googleLoginService.loginGoogle(tokenRequest.getIdToken())).thenReturn(userDetails);
         when(jwtTokenService.generateToken(userDetails)).thenReturn(token);
 
         post("/api/v1/auths/google", tokenRequest)

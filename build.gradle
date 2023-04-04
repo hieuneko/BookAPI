@@ -35,10 +35,8 @@ dependencies {
 
     implementation "org.apache.commons:commons-collections4:4.4"
 
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
-    implementation 'com.google.firebase:firebase-admin:9.1.1'
+    implementation 'com.google.api-client:google-api-client:2.2.0'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     implementation 'org.projectlombok:lombok'
