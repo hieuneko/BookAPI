@@ -27,9 +27,6 @@ class GoogleLoginServiceTest {
     private UserStore userStore;
 
     @Mock
-    private JwtUserDetailsService jwtUserDetailsService;
-
-    @Mock
     private GoogleTokenVerifierService googleTokenVerifierService;
 
     @Mock
@@ -42,15 +39,15 @@ class GoogleLoginServiceTest {
 
     @Test
     void shouldLoginGoogle_OK() {
-        final var user = buildUser();
         final GoogleTokenPayload tokenPayload = buildToken();
-        final JwtUserDetails userDetails = new JwtUserDetails(user, List.of(new SimpleGrantedAuthority("CONTRIBUTOR")));
+        final var user = buildUser();
 
         user.setUsername(tokenPayload.getEmail());
 
+        final JwtUserDetails userDetails = new JwtUserDetails(user, List.of(new SimpleGrantedAuthority("CONTRIBUTOR")));
+
         when(googleTokenVerifierService.googleIdTokenVerifier(anyString())).thenReturn(tokenPayload);
         when(userStore.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
-        when(jwtUserDetailsService.loadUserByUsername(user.getUsername())).thenReturn(userDetails);
 
         final var actual = googleLoginService.loginGoogle(anyString());
 
@@ -58,7 +55,6 @@ class GoogleLoginServiceTest {
 
         verify(googleTokenVerifierService).googleIdTokenVerifier(anyString());
         verify(userStore).findByUsername(user.getUsername());
-        verify(jwtUserDetailsService).loadUserByUsername(user.getUsername());
     }
 
     @Test
@@ -86,7 +82,6 @@ class GoogleLoginServiceTest {
 
         final JwtUserDetails userDetails = new JwtUserDetails(newUser, List.of(new SimpleGrantedAuthority("CONTRIBUTOR")));
 
-        when(jwtUserDetailsService.loadUserByUsername(newUser.getUsername())).thenReturn(userDetails);
 
         final var actual = googleLoginService.loginGoogle(anyString());
         assertEquals(userDetails, actual);
@@ -95,7 +90,6 @@ class GoogleLoginServiceTest {
         verify(userStore).findByUsername(tokenPayload.getEmail());
         verify(roleStore).findIdByName(anyString());
         verify(userStore).create(any());
-        verify(jwtUserDetailsService).loadUserByUsername(newUser.getUsername());
     }
 
 }

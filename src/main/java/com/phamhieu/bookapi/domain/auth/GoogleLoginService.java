@@ -4,11 +4,14 @@ import com.phamhieu.bookapi.domain.user.User;
 import com.phamhieu.bookapi.persistence.role.RoleStore;
 import com.phamhieu.bookapi.persistence.user.UserStore;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.lang.String;
-import java.util.Optional;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 
 @Service
@@ -21,24 +24,22 @@ public class GoogleLoginService {
 
     private final RoleStore roleStore;
 
-    private final JwtUserDetailsService jwtUserDetailsService;
-
     public UserDetails loginGoogle(final String decodedToken) {
         final GoogleTokenPayload googleAccount = googleTokenVerifierService.googleIdTokenVerifier(decodedToken);
-        final Optional<User> existUser = userStore.findByUsername(googleAccount.getEmail());
-
-        if (existUser.isEmpty()) {
-            final UUID roleId = roleStore.findIdByName("CONTRIBUTOR");
-            final User newUser = User.builder()
-                    .username(googleAccount.getEmail())
-                    .password(UUID.randomUUID().toString())
-                    .enabled(true)
-                    .roleId(roleId)
-                    .build();
-            userStore.create(newUser);
-
-            return jwtUserDetailsService.loadUserByUsername(newUser.getUsername());
-        }
-        return jwtUserDetailsService.loadUserByUsername(existUser.get().getUsername());
+        final Collection<? extends GrantedAuthority> authorities =
+                Collections.singleton(new SimpleGrantedAuthority("CONTRIBUTOR"));
+        return userStore.findByUsername(googleAccount.getEmail())
+                .map(user -> new JwtUserDetails(user, authorities))
+                .orElseGet(() -> {
+                    final UUID roleId = roleStore.findIdByName("CONTRIBUTOR");
+                    final User newUser = User.builder()
+                            .username(googleAccount.getEmail())
+                            .password(UUID.randomUUID().toString())
+                            .enabled(true)
+                            .roleId(roleId)
+                            .build();
+                    userStore.create(newUser);
+                    return new JwtUserDetails(newUser, authorities);
+                });
     }
 }
