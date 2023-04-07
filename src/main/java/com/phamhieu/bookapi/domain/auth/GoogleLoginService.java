@@ -36,7 +36,8 @@ public class GoogleLoginService {
     }
 
     private JwtUserDetails createNewGoogleUser(GoogleTokenPayload googleAccount) {
-        final UUID roleId = roleStore.findIdByName("CONTRIBUTOR");
+        final String newGoogleUserRole = "CONTRIBUTOR";
+        final UUID roleId = roleStore.findIdByName(newGoogleUserRole);
         final User newUser = User.builder()
                 .username(googleAccount.getEmail())
                 .password(UUID.randomUUID().toString())
@@ -44,7 +45,7 @@ public class GoogleLoginService {
                 .roleId(roleId)
                 .build();
         userStore.create(newUser);
-        return new JwtUserDetails(newUser, createGoogleUserAuthorities("CONTRIBUTOR"));
+        return new JwtUserDetails(newUser, createGoogleUserAuthorities(newGoogleUserRole));
     }
 
     private Collection<? extends GrantedAuthority> createGoogleUserAuthorities(final String role) {
