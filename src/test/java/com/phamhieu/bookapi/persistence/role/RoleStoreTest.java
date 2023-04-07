@@ -47,7 +47,7 @@ class RoleStoreTest {
     }
 
     @Test
-    void shouldRoleId_OK() throws Exception {
+    void shouldRoleId_OK() {
         final UUID roleId = randomUUID();
         final RoleEntity roleEntity = new RoleEntity(roleId, "CONTRIBUTOR");
         final String roleName = randomAlphabetic(3, 10);
