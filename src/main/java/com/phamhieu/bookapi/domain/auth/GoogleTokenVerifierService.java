@@ -16,6 +16,7 @@ public class GoogleTokenVerifierService {
 
     private final GoogleTokenVerifierConfig googleTokenVerifierConfig;
 
+
     public GoogleTokenPayload googleIdTokenVerifier(final String idToken) {
         try {
 

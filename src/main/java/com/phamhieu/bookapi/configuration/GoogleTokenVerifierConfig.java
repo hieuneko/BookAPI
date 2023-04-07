@@ -13,12 +13,12 @@ import static java.util.Collections.singletonList;
 public class GoogleTokenVerifierConfig {
 
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
-    private String CLIENT_ID;
+    private String clientId;
 
     @Bean
     public GoogleIdTokenVerifier tokenVerify() {
         return new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
-                .setAudience(singletonList(CLIENT_ID))
+                .setAudience(singletonList(clientId))
                 .build();
     }
 }

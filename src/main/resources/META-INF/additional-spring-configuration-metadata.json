@@ -1,18 +1,13 @@
 {
   "properties": [
     {
-      "name": "firebase.project.id",
+      "name": "spring.security.oauth2.registration.client-id",
       "type": "java.lang.String",
-      "description": "Description for firebase.project.id."
+      "description": "Description for spring.security.oauth2.registration.client-id."
     },
     {
-      "name": "-Dspring.security.oauth2.client.registration.google.client-id",
+      "name": "spring.security.oauth2.registration.client-secret",
       "type": "java.lang.String",
-      "description": "Description for -Dspring.security.oauth2.client.registration.google.client-id."
-    },
-    {
-      "name": "-Dspring.security.oauth2.client.registration.google.client-secret",
-      "type": "java.lang.String",
-      "description": "Description for -Dspring.security.oauth2.client.registration.google.client-secret."
+      "description": "Description for spring.security.oauth2.registration.client-secret."
     }
   ] }
