@@ -18,6 +18,7 @@ import static com.phamhieu.bookapi.fakes.AuthenticationFakes.buildAuthentication
 import static com.phamhieu.bookapi.fakes.UserFakes.buildUser;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -60,5 +61,8 @@ class AuthControllerTest extends AbstractControllerTest {
 
         post("/api/v1/auths/google", tokenRequest)
                 .andExpect(jsonPath("$.token").value(token));
+
+        verify(googleLoginService).loginGoogle(tokenRequest.getIdToken());
+        verify(jwtTokenService).generateToken(userDetails);
     }
 }

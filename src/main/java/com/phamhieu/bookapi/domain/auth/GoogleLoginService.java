@@ -30,16 +30,18 @@ public class GoogleLoginService {
                 Collections.singleton(new SimpleGrantedAuthority("CONTRIBUTOR"));
         return userStore.findByUsername(googleAccount.getEmail())
                 .map(user -> new JwtUserDetails(user, authorities))
-                .orElseGet(() -> {
-                    final UUID roleId = roleStore.findIdByName("CONTRIBUTOR");
-                    final User newUser = User.builder()
-                            .username(googleAccount.getEmail())
-                            .password(UUID.randomUUID().toString())
-                            .enabled(true)
-                            .roleId(roleId)
-                            .build();
-                    userStore.create(newUser);
-                    return new JwtUserDetails(newUser, authorities);
-                });
+                .orElseGet(() -> createNewGoogleUser(googleAccount, authorities));
+    }
+
+    private JwtUserDetails createNewGoogleUser(GoogleTokenPayload googleAccount, Collection<? extends GrantedAuthority> authorities) {
+        final UUID roleId = roleStore.findIdByName("CONTRIBUTOR");
+        final User newUser = User.builder()
+                .username(googleAccount.getEmail())
+                .password(UUID.randomUUID().toString())
+                .enabled(true)
+                .roleId(roleId)
+                .build();
+        userStore.create(newUser);
+        return new JwtUserDetails(newUser, authorities);
     }
 }

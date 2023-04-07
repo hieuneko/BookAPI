@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://apis.google.com/js/api.js?onload=onLibraryLoaded" async defer></script>
+    <style>
+        .container {
+            height: 200px;
+            position: relative;
+        }
+
+        .center {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+
+        .google-btn {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="center">
+        <button class="google-btn" onclick="signIn()">Sign in with Google</button>
+    </div>
+</div>
+<div id="email" style="text-align: center; margin-top:10%; font-size:30px"></div>
+<script>
+    var auth2 = undefined;
+
+    function onLibraryLoaded() {
+        gapi.load('auth2', function() {
+            auth2 = gapi.auth2.init({
+                client_id: '117223285300-7v6i7cfgmlgalskig5s1ukinggd1cnn1.apps.googleusercontent.com',
+                scope: 'profile',
+                plugin_name: 'book-api',
+                response_type: 'id_token'
+            })
+        })
+    }
+
+    function signIn() {
+        auth2.signIn().then(function(result) {
+            console.log(result.zc.id_token);
+            callApi(result.zc.id_token);
+        }, function(err) {
+            console.log(err);
+        })
+    }
+
+    function callApi(token) {
+        fetch("http://localhost:8080/api/v1/auths/google", {
+            method: 'POST',
+            body: JSON.stringify({
+                idToken: token
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                localStorage.setItem('jwtToken', data.token);
+                console.log(data.token);
+                getProfile(data.token);
+            })
+    }
+
+    function getProfile(jwtToken) {
+        fetch('http://localhost:8080/api/v1/profiles', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`
+            }
+        })
+            .then(response => {
+                return response.json();
+            }).then(user => {
+            localStorage.setItem('userDetail', JSON.stringify(user));
+
+            let userDetail = JSON.parse(localStorage.getItem('userDetail'));
+            console.log(userDetail);
+            if (userDetail == null) {
+                email.innerHTML = "Your account not belong to this website";
+            } else {
+                email.innerHTML = "Hello user: " + userDetail.username;
+            }
+        })
+    }
+</script>
+</body>
+
+</html>
