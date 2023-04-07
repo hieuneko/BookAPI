@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import static com.phamhieu.bookapi.fakes.GoogleTokenPayloadFakes.buildToken;
 import static com.phamhieu.bookapi.fakes.UserFakes.buildUser;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -41,13 +42,15 @@ class GoogleLoginServiceTest {
     void shouldLoginGoogle_OK() {
         final GoogleTokenPayload tokenPayload = buildToken();
         final var user = buildUser();
+        final var authorities = randomAlphabetic(3,10);
 
         user.setUsername(tokenPayload.getEmail());
 
-        final JwtUserDetails userDetails = new JwtUserDetails(user, List.of(new SimpleGrantedAuthority("CONTRIBUTOR")));
+        final JwtUserDetails userDetails = new JwtUserDetails(user, List.of(new SimpleGrantedAuthority(authorities)));
 
         when(googleTokenVerifierService.googleIdTokenVerifier(anyString())).thenReturn(tokenPayload);
         when(userStore.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
+        when(roleStore.findRoleName(user.getRoleId())).thenReturn(authorities);
 
         final var actual = googleLoginService.loginGoogle(anyString());
 
@@ -55,6 +58,7 @@ class GoogleLoginServiceTest {
 
         verify(googleTokenVerifierService).googleIdTokenVerifier(anyString());
         verify(userStore).findByUsername(user.getUsername());
+        verify(roleStore).findRoleName(user.getRoleId());
     }
 
     @Test

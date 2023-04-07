@@ -26,14 +26,15 @@ public class GoogleLoginService {
 
     public UserDetails loginGoogle(final String decodedToken) {
         final GoogleTokenPayload googleAccount = googleTokenVerifierService.googleIdTokenVerifier(decodedToken);
-        final Collection<? extends GrantedAuthority> authorities =
-                Collections.singleton(new SimpleGrantedAuthority("CONTRIBUTOR"));
         return userStore.findByUsername(googleAccount.getEmail())
-                .map(user -> new JwtUserDetails(user, authorities))
-                .orElseGet(() -> createNewGoogleUser(googleAccount, authorities));
+                .map(user -> {
+                    final String roleName = roleStore.findRoleName(user.getRoleId());
+                    return new JwtUserDetails(user, createGoogleUserAuthorities(roleName));
+                })
+                .orElseGet(() -> createNewGoogleUser(googleAccount));
     }
 
-    private JwtUserDetails createNewGoogleUser(GoogleTokenPayload googleAccount, Collection<? extends GrantedAuthority> authorities) {
+    private JwtUserDetails createNewGoogleUser(GoogleTokenPayload googleAccount) {
         final UUID roleId = roleStore.findIdByName("CONTRIBUTOR");
         final User newUser = User.builder()
                 .username(googleAccount.getEmail())
@@ -42,6 +43,10 @@ public class GoogleLoginService {
                 .roleId(roleId)
                 .build();
         userStore.create(newUser);
-        return new JwtUserDetails(newUser, authorities);
+        return new JwtUserDetails(newUser, createGoogleUserAuthorities("CONTRIBUTOR"));
+    }
+
+    private Collection<? extends GrantedAuthority> createGoogleUserAuthorities(final String role) {
+        return Collections.singleton(new SimpleGrantedAuthority(role));
     }
 }

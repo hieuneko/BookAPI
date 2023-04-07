@@ -1,5 +1,6 @@
 package com.phamhieu.bookapi.persistence.role;
 
+import com.phamhieu.bookapi.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +17,8 @@ public class RoleStore {
     }
 
     public UUID findIdByName(final String roleName) {
-        return roleRepository.findByName(roleName).get().getId();
+        return roleRepository.findByName(roleName)
+                .orElseThrow(() -> new NotFoundException("Role not found - " + roleName))
+                .getId();
     }
 }
