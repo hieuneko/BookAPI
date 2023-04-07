@@ -11,8 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.lang.String;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.UUID;
+
+import static java.util.Collections.singleton;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +48,6 @@ public class GoogleLoginService {
     }
 
     private Collection<? extends GrantedAuthority> createGoogleUserAuthorities(final String role) {
-        return Collections.singleton(new SimpleGrantedAuthority(role));
+        return singleton(new SimpleGrantedAuthority(role));
     }
 }
