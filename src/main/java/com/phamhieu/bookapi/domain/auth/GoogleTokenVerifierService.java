@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
+import static com.phamhieu.bookapi.domain.auth.GoogleTokenPayloadMapper.toGoogleTokenPayload;
+
 @Service
 @RequiredArgsConstructor
 public class GoogleTokenVerifierService {
@@ -19,12 +21,7 @@ public class GoogleTokenVerifierService {
 
             final var googleIdToken = googleTokenVerifierConfig.tokenVerify().verify(idToken);
             final GoogleIdToken.Payload payload = googleIdToken.getPayload();
-            return GoogleTokenPayload.builder()
-                    .email(payload.getEmail())
-                    .firstName((String) payload.get("family_name"))
-                    .lastName((String) payload.get("given_name"))
-                    .avatar((String) payload.get("picture"))
-                    .build();
+            return toGoogleTokenPayload(payload);
 
         } catch (GeneralSecurityException | IOException e) {
             throw new RuntimeException(e);

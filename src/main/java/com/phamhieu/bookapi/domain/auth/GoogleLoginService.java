@@ -28,27 +28,32 @@ public class GoogleLoginService {
     public UserDetails loginGoogle(final String decodedToken) {
         final GoogleTokenPayload googleAccount = googleTokenVerifierService.googleIdTokenVerifier(decodedToken);
         return userStore.findByUsername(googleAccount.getEmail())
-                .map(user -> {
-                    final String roleName = roleStore.findRoleName(user.getRoleId());
-                    return new JwtUserDetails(user, createGoogleUserAuthorities(roleName));
-                })
+                .map(this::getJwtUserDetails)
                 .orElseGet(() -> createNewGoogleUser(googleAccount));
     }
 
+    private JwtUserDetails getJwtUserDetails(User user) {
+        final String roleName = roleStore.findRoleName(user.getRoleId());
+        return new JwtUserDetails(user, createAuthorities(roleName));
+    }
+
     private JwtUserDetails createNewGoogleUser(GoogleTokenPayload googleAccount) {
-        final String newGoogleUserRole = "CONTRIBUTOR";
-        final UUID roleId = roleStore.findIdByName(newGoogleUserRole);
+        final UUID roleId = roleStore.findIdByName("CONTRIBUTOR");
+        final User newUser = createUser(googleAccount, roleId);
+        return new JwtUserDetails(newUser, createAuthorities("CONTRIBUTOR"));
+    }
+
+    private User createUser(GoogleTokenPayload googleAccount, UUID roleId) {
         final User newUser = User.builder()
                 .username(googleAccount.getEmail())
                 .password(UUID.randomUUID().toString())
                 .enabled(true)
                 .roleId(roleId)
                 .build();
-        userStore.create(newUser);
-        return new JwtUserDetails(newUser, createGoogleUserAuthorities(newGoogleUserRole));
+        return userStore.create(newUser);
     }
 
-    private Collection<? extends GrantedAuthority> createGoogleUserAuthorities(final String role) {
+    private Collection<? extends GrantedAuthority> createAuthorities(final String role) {
         return singleton(new SimpleGrantedAuthority(role));
     }
 }
