@@ -12,11 +12,8 @@ import static java.util.Collections.singletonList;
 @Configuration
 public class GoogleTokenVerifierConfig {
 
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
-    private String clientId;
-
     @Bean
-    public GoogleIdTokenVerifier tokenVerify() {
+    public GoogleIdTokenVerifier googleIdTokenVerifier(@Value("${spring.security.oauth2.client.registration.google.client-id}") final String clientId) {
         return new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
                 .setAudience(singletonList(clientId))
                 .build();
