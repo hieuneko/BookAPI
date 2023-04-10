@@ -51,8 +51,6 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     runtimeOnly 'org.postgresql:postgresql'
 
-    implementation group: 'org.springframework.social', name: 'spring-social-google', version: '1.0.0.RELEASE'
-
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testFixturesImplementation 'org.springframework.security:spring-security-test'
