@@ -1,15 +1,13 @@
 package com.phamhieu.bookapi.api.auth;
 
+import com.phamhieu.bookapi.domain.auth.GoogleLoginService;
 import com.phamhieu.bookapi.domain.auth.JwtTokenService;
 import com.phamhieu.bookapi.domain.auth.JwtUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.phamhieu.bookapi.api.auth.LoginDTOMapper.toAuthentication;
 
@@ -20,6 +18,8 @@ public class AuthController {
 
     private final JwtTokenService jwtTokenUtil;
 
+    private final GoogleLoginService googleLoginService;
+
     private final AuthenticationManager authenticationManager;
 
     @Operation(summary = "User login into system")
@@ -27,8 +27,19 @@ public class AuthController {
     public JwtTokenResponseDTO login(@RequestBody LoginDTO loginDTO) {
         final Authentication authentication = authenticationManager.authenticate(toAuthentication(loginDTO));
 
+        return generateToken((JwtUserDetails) authentication.getPrincipal());
+    }
+
+    @Operation(summary = "User login by google account")
+    @PostMapping("/google")
+    public JwtTokenResponseDTO loginGoogle(@RequestBody TokenRequestDTO tokenRequestDTO) {
+
+        return generateToken((JwtUserDetails) googleLoginService.loginGoogle(tokenRequestDTO.getIdToken()));
+    }
+
+    private JwtTokenResponseDTO generateToken(final JwtUserDetails jwtUserDetails) {
         return JwtTokenResponseDTO.builder()
-                .token(jwtTokenUtil.generateToken((JwtUserDetails) authentication.getPrincipal()))
+                .token(jwtTokenUtil.generateToken(jwtUserDetails))
                 .build();
     }
 }

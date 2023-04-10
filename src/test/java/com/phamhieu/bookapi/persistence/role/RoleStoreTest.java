@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
@@ -45,5 +46,15 @@ class RoleStoreTest {
         verify(roleRepository).findRoleName(roleId);
     }
 
+    @Test
+    void shouldRoleId_OK() {
+        final UUID roleId = randomUUID();
+        final RoleEntity roleEntity = new RoleEntity(roleId, "CONTRIBUTOR");
+        final String roleName = randomAlphabetic(3, 10);
+        when(roleRepository.findByName(roleName))
+                .thenReturn(Optional.of(roleEntity));
 
+        assertEquals(roleId, roleStore.findIdByName(roleName));
+        verify(roleRepository).findByName(roleName);
+    }
 }

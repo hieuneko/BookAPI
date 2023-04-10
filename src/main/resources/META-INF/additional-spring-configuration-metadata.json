@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "spring.security.oauth2.registration.client-id",
+      "type": "java.lang.String",
+      "description": "Description for spring.security.oauth2.registration.client-id."
+    },
+    {
+      "name": "spring.security.oauth2.registration.client-secret",
+      "type": "java.lang.String",
+      "description": "Description for spring.security.oauth2.registration.client-secret."
+    }
+  ] }
