@@ -87,8 +87,8 @@ public class BookService {
 
     private void verifyIsbn13BookAvailable(final String isbn13) {
         bookStore.findBookByIsbn13(isbn13)
-                .ifPresent(exitedBook -> {
-                    throw supplyIsbn13BookAlreadyExist(exitedBook.getIsbn13()).get();
+                .ifPresent(existedBook -> {
+                    throw supplyIsbn13BookAlreadyExist(existedBook.getIsbn13()).get();
                 });
     }
 }
