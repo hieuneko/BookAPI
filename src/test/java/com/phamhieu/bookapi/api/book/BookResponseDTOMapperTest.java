@@ -2,6 +2,7 @@ package com.phamhieu.bookapi.api.book;
 
 import org.junit.jupiter.api.Test;
 
+import static com.phamhieu.bookapi.api.book.BookDTOMapper.toBook;
 import static com.phamhieu.bookapi.api.book.BookDTOMapper.*;
 import static com.phamhieu.bookapi.fakes.BookFakes.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -68,6 +68,23 @@ class JwtTokenServiceTest {
     }
 
     @Test
+    public void shouldParseToken_OK() {
+        final User user = buildUser();
+        final String authority = randomAlphabetic(3, 10);
+        final JwtUserDetails userDetails = new JwtUserDetails(user, List.of(new SimpleGrantedAuthority(authority)));
+
+        when(jwtProperties.getSecret()).thenReturn(SECRET);
+        when(jwtProperties.getExpiration()).thenReturn(EXPIRATION);
+
+        final String token = jwtTokenService.generateToken(userDetails);
+        final Authentication authentication = jwtTokenService.parse(token);
+
+        assertNotNull(authentication);
+        assertEquals(userDetails.getUserId(), authentication.getPrincipal());
+        assertEquals(userDetails.getUsername(), authentication.getCredentials());
+    }
+
+    @Test
     public void shouldParseTokenWithoutSubjectId_ReturnNull() {
         final User user = buildUser();
         final String authority = randomAlphabetic(3, 10);
