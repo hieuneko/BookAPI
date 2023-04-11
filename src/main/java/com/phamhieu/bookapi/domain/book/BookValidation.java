@@ -24,4 +24,58 @@ public class BookValidation {
             throw supplyNotEnoughInformation("author").get();
         }
     }
+
+    private void validateSubtitle(final String subtitle) {
+        if (isBlank(subtitle)) {
+            throw supplyNotEnoughInformation("subtitle").get();
+        }
+    }
+
+    private void validatePublisher(final String publisher) {
+        if (isBlank(publisher)) {
+            throw supplyNotEnoughInformation("publisher").get();
+        }
+    }
+
+    private void validateIsbn13(final String isbn13) {
+        if (isBlank(isbn13)) {
+            throw supplyNotEnoughInformation("isbn13").get();
+        }
+    }
+
+    private void validateSubtitle(final String subtitle) {
+        if (isBlank(subtitle)) {
+            throw supplyNotEnoughInformation("subtitle").get();
+        }
+    }
+
+    private void validateSubtitle(final String subtitle) {
+        if (isBlank(subtitle)) {
+            throw supplyNotEnoughInformation("subtitle").get();
+        }
+    }
+
+    private void validateSubtitle(final String subtitle) {
+        if (isBlank(subtitle)) {
+            throw supplyNotEnoughInformation("subtitle").get();
+        }
+    }
+
+    private void validateSubtitle(final String subtitle) {
+        if (isBlank(subtitle)) {
+            throw supplyNotEnoughInformation("subtitle").get();
+        }
+    }
+
+    private void validateSubtitle(final String subtitle) {
+        if (isBlank(subtitle)) {
+            throw supplyNotEnoughInformation("subtitle").get();
+        }
+    }
+
+    private void validateSubtitle(final String subtitle) {
+        if (isBlank(subtitle)) {
+            throw supplyNotEnoughInformation("subtitle").get();
+        }
+    }
 }
