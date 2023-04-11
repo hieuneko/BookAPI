@@ -31,11 +31,6 @@ public class BookService {
                 .orElseThrow(supplyNotFound("id", String.valueOf(bookId)));
     }
 
-    public Book findBookByIsbn13(final String isbn13) {
-        return bookStore.findBookByIsbn13(isbn13)
-                .orElseThrow(supplyNotFound("isbn13", isbn13));
-    }
-
     public List<Book> find(final String inputKeyword) {
         return bookStore.find(inputKeyword);
     }
