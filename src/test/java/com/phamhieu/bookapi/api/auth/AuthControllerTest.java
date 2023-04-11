@@ -1,9 +1,9 @@
 package com.phamhieu.bookapi.api.auth;
 
 import com.phamhieu.bookapi.api.AbstractControllerTest;
-import com.phamhieu.bookapi.domain.auth.SocialLoginService;
 import com.phamhieu.bookapi.domain.auth.JwtTokenService;
 import com.phamhieu.bookapi.domain.auth.JwtUserDetails;
+import com.phamhieu.bookapi.domain.auth.SocialLoginService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
