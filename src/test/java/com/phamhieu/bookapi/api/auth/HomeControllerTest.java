@@ -14,7 +14,7 @@ public class HomeControllerTest extends AbstractControllerTest {
     @Test
     @WithMockAdmin
     public void shouldLoginPage_OK() throws Exception {
-        get("/google")
+        get("/social")
                 .andExpect(status().isOk())
                 .andExpect(view().name("index.html"));
     }
