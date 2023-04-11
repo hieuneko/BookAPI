@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-import static com.phamhieu.bookapi.domain.auth.SocialTokenPayloadMapper.toSocialTokenPayloadFromGoogle;
+import static com.phamhieu.bookapi.domain.auth.SocialTokenPayloadMapper.toSocialTokenPayload;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +20,7 @@ public class GoogleTokenVerifierService {
         try {
             final var googleIdToken = tokenVerifier.verify(idToken);
             final GoogleIdToken.Payload payload = googleIdToken.getPayload();
-            return toSocialTokenPayloadFromGoogle(payload);
+            return toSocialTokenPayload(payload);
         } catch (GeneralSecurityException | IOException e) {
             throw new RuntimeException(e);
         }

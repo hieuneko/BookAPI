@@ -7,7 +7,7 @@ import org.springframework.social.facebook.api.User;
 @UtilityClass
 public class SocialTokenPayloadMapper {
 
-    public static SocialTokenPayload toSocialTokenPayloadFromGoogle(final GoogleIdToken.Payload payload) {
+    public static SocialTokenPayload toSocialTokenPayload(final GoogleIdToken.Payload payload) {
         return SocialTokenPayload.builder()
                 .email(payload.getEmail())
                 .username((String) payload.get("name"))
@@ -16,7 +16,7 @@ public class SocialTokenPayloadMapper {
                 .build();
     }
 
-    public static SocialTokenPayload toSocialTokenPayloadFromFacebook(final User user) {
+    public static SocialTokenPayload toSocialTokenPayload(final User user) {
         return SocialTokenPayload.builder()
                 .email(user.getEmail())
                 .username(user.getId())
