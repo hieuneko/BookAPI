@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ItBookMapper {
 
-    public static Book toBook(ItBookDetailDTO itBookDetailDTO) {
+    public static Book toBook(final ItBookDetailDTO itBookDetailDTO) {
         return Book.builder()
                 .title(itBookDetailDTO.getTitle())
                 .subtitle(itBookDetailDTO.getSubtitle())

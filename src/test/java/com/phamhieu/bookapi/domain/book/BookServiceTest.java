@@ -23,8 +23,7 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -144,6 +143,17 @@ class BookServiceTest {
     }
 
     @Test
+    void shouldCreate_ThrownIsbn13BookAvailable() {
+        final var book = buildBook();
+
+        when(bookStore.findBookByIsbn13(anyString())).thenReturn(Optional.of(book));
+
+        assertThrows(BadRequestException.class, () -> bookService.create(book));
+
+        verify(bookStore).findBookByIsbn13(book.getIsbn13());
+    }
+
+    @Test
     void shouldUpdateWithAdmin_OK() {
         final var book = buildBook();
         final var updatedBook = buildBook();
@@ -234,6 +244,24 @@ class BookServiceTest {
         when(authsProvider.getCurrentRole()).thenReturn(buildAdmin().getRole());
 
         assertThrows(BadRequestException.class, () -> bookService.update(id, expected));
+    }
+
+    @Test
+    void shouldUpdate_ThrownIsbn13BookAvailable() {
+        final var bookToUpdate = buildBook();
+        final var bookExited = buildBook();
+        final var bookUpdate = buildBook();
+        bookUpdate.setIsbn13(bookExited.getIsbn13());
+
+        when(bookStore.findById(bookToUpdate.getId())).thenReturn(Optional.of(bookToUpdate));
+        when(bookStore.findBookByIsbn13(bookUpdate.getIsbn13())).thenReturn(Optional.of(bookUpdate));
+        when(authsProvider.getCurrentRole()).thenReturn(buildAdmin().getRole());
+
+        assertThrows(BadRequestException.class, () -> bookService.update(bookToUpdate.getId(), bookUpdate));
+
+        verify(bookStore).findById(bookToUpdate.getId());
+        verify(bookStore).findBookByIsbn13(bookUpdate.getIsbn13());
+        verify(bookStore, never()).update(bookUpdate);
     }
 
     @Test

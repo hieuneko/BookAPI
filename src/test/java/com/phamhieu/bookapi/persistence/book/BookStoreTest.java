@@ -14,6 +14,7 @@ import static com.phamhieu.bookapi.fakes.BookFakes.buildBookEntity;
 import static com.phamhieu.bookapi.persistence.book.BookEntityMapper.toBook;
 import static java.util.UUID.randomUUID;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
+import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -103,6 +104,42 @@ class BookStoreTest {
         verify(bookRepository).findByKeyword(input);
     }
 
+    @Test
+    void shouldFindBookByIsbn13_OK() {
+        final var book = buildBookEntity();
+
+        when(bookRepository.findByIsbn13(book.getIsbn13())).thenReturn(Optional.of(book));
+
+        final var actual = bookStore.findBookByIsbn13(book.getIsbn13()).get();
+
+        assertNotNull(actual);
+        assertEquals(book.getId(), actual.getId());
+        assertEquals(book.getTitle(), actual.getTitle());
+        assertEquals(book.getAuthor(), actual.getAuthor());
+        assertEquals(book.getUpdatedAt(), actual.getUpdatedAt());
+        assertEquals(book.getCreatedAt(), actual.getCreatedAt());
+        assertEquals(book.getDescription(), actual.getDescription());
+        assertEquals(book.getImage(), actual.getImage());
+        assertEquals(book.getSubtitle(), actual.getSubtitle());
+        assertEquals(book.getPublisher(), actual.getPublisher());
+        assertEquals(book.getIsbn13(), actual.getIsbn13());
+        assertEquals(book.getPrice(), actual.getPrice());
+        assertEquals(book.getYear(), actual.getYear());
+        assertEquals(book.getRating(), actual.getRating());
+        assertEquals(book.getUserId(), actual.getUserId());
+
+        verify(bookRepository).findByIsbn13(book.getIsbn13());
+    }
+
+    @Test
+    void shouldFindBookByIsbn13_Empty() {
+        final var isbn13 = randomNumeric(13);
+
+        when(bookRepository.findByIsbn13(isbn13)).thenReturn(Optional.empty());
+
+        assertFalse(bookStore.findBookByIsbn13(isbn13).isPresent());
+        verify(bookRepository).findByIsbn13(isbn13);
+    }
 
     @Test
     void shouldCreate_OK() {
