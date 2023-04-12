@@ -11,10 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static com.phamhieu.bookapi.fakes.BookFakes.buildBook;
 import static com.phamhieu.bookapi.fakes.BookFakes.buildBooks;
+import static java.util.UUID.randomUUID;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -142,6 +144,19 @@ class BookControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$.updatedAt").value(book.getUpdatedAt().toString()))
                 .andExpect(jsonPath("$.image").value(updatedBook.getImage()))
                 .andExpect(jsonPath("$.userId").value(updatedBook.getUserId().toString()));
+    }
+
+    @Test
+    @WithMockAdmin
+    void shouldUploadImage_OK() throws Exception {
+        final var id = randomUUID();
+        final var bytes = "abc".getBytes();
+        final var file = new MockMultipartFile("file", "image.png", "image/png", bytes);
+
+        postFile(BASE_URL + "/" + id + "/image", file)
+                .andExpect(status().isOk());
+
+        verify(bookService).uploadImage(id, bytes);
     }
 
     @Test

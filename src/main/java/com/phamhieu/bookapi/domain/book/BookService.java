@@ -5,14 +5,14 @@ import com.phamhieu.bookapi.persistence.book.BookStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.phamhieu.bookapi.domain.auth.AuthError.supplyBookAccessDenied;
-import static com.phamhieu.bookapi.domain.book.BookValidation.*;
-
+import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-import static com.phamhieu.bookapi.domain.book.BookError.*;
+import static com.phamhieu.bookapi.domain.auth.AuthError.supplyBookAccessDenied;
+import static com.phamhieu.bookapi.domain.book.BookError.supplyBookNotFoundById;
+import static com.phamhieu.bookapi.domain.book.BookValidation.validateBook;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +21,8 @@ public class BookService {
     private final BookStore bookStore;
 
     private final AuthsProvider authsProvider;
+
+    private final CloudinaryService cloudinaryService;
 
     public List<Book> findAll() {
         return bookStore.findAll();
@@ -55,6 +57,16 @@ public class BookService {
         existingBook.setImage(book.getImage());
 
         return bookStore.update(existingBook);
+    }
+
+    public void uploadImage(final UUID id, final byte[] image) throws IOException {
+        final Book book = findById(id);
+        validatePermissionWhenChangeBook(book);
+
+        book.setImage(cloudinaryService.upload(image));
+        book.setUpdatedAt(Instant.now());
+
+        bookStore.update(book);
     }
 
     public void delete(final UUID bookId) {

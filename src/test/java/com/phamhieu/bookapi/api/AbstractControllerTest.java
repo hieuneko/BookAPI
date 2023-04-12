@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -29,6 +30,13 @@ public abstract class AbstractControllerTest {
     protected ResultActions post(final String url, final Object object) throws Exception {
         return perform(MockMvcRequestBuilders.post(url)
                 .content(objectMapper.writeValueAsString(object)));
+    }
+
+    protected ResultActions postFile(final String url, final Object object) throws Exception {
+        final var multipartRequest = MockMvcRequestBuilders.multipart(url)
+                .file((MockMultipartFile) object);
+
+        return perform(multipartRequest.with(csrf()));
     }
 
     protected ResultActions put(final String url, final Object object) throws Exception {
