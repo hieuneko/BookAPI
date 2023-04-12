@@ -78,7 +78,7 @@ public class JWTWebSecurityConfig {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/v1/books/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/social").permitAll()
+                .antMatchers(HttpMethod.GET, "/login").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

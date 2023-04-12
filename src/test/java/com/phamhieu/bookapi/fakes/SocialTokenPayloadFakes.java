@@ -9,10 +9,10 @@ public class SocialTokenPayloadFakes {
     public static SocialTokenPayload buildToken() {
         return SocialTokenPayload.builder()
                 .email("test@gmail.com")
-                .name("test")
-                .username("test")
-                .firstName("test")
-                .lastName("test")
+                .name("name")
+                .username("username")
+                .firstName("firstName")
+                .lastName("lastName")
                 .build();
     }
 }
