@@ -1,9 +1,9 @@
 package com.phamhieu.bookapi.api.auth;
 
 import com.phamhieu.bookapi.api.AbstractControllerTest;
-import com.phamhieu.bookapi.domain.auth.GoogleLoginService;
 import com.phamhieu.bookapi.domain.auth.JwtTokenService;
 import com.phamhieu.bookapi.domain.auth.JwtUserDetails;
+import com.phamhieu.bookapi.domain.auth.SocialLoginService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -35,7 +35,7 @@ class AuthControllerTest extends AbstractControllerTest {
     private JwtTokenService jwtTokenService;
 
     @MockBean
-    private GoogleLoginService googleLoginService;
+    private SocialLoginService socialLoginService;
 
     @Test
     void shouldLogin_Ok() throws Exception {
@@ -56,13 +56,30 @@ class AuthControllerTest extends AbstractControllerTest {
         final var user = buildUser();
         final JwtUserDetails userDetails = new JwtUserDetails(user, List.of(new SimpleGrantedAuthority("CONTRIBUTOR")));
 
-        when(googleLoginService.loginGoogle(tokenRequest.getIdToken())).thenReturn(userDetails);
+        when(socialLoginService.loginGoogle(tokenRequest.getIdToken())).thenReturn(userDetails);
         when(jwtTokenService.generateToken(userDetails)).thenReturn(token);
 
         post("/api/v1/auths/google", tokenRequest)
                 .andExpect(jsonPath("$.token").value(token));
 
-        verify(googleLoginService).loginGoogle(tokenRequest.getIdToken());
+        verify(socialLoginService).loginGoogle(tokenRequest.getIdToken());
+        verify(jwtTokenService).generateToken(userDetails);
+    }
+
+    @Test
+    void shouldLoginFacebook_OK() throws Exception {
+        final var tokenRequest = new TokenRequestDTO(randomAlphabetic(3, 10));
+        final var token = randomAlphabetic(3, 10);
+        final var user = buildUser();
+        final JwtUserDetails userDetails = new JwtUserDetails(user, List.of(new SimpleGrantedAuthority("CONTRIBUTOR")));
+
+        when(socialLoginService.loginFacebook(tokenRequest.getIdToken())).thenReturn(userDetails);
+        when(jwtTokenService.generateToken(userDetails)).thenReturn(token);
+
+        post("/api/v1/auths/facebook", tokenRequest)
+                .andExpect(jsonPath("$.token").value(token));
+
+        verify(socialLoginService).loginFacebook(tokenRequest.getIdToken());
         verify(jwtTokenService).generateToken(userDetails);
     }
 }

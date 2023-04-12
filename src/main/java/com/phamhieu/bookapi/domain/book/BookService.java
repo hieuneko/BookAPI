@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.phamhieu.bookapi.domain.auth.AuthError.supplyBookAccessDenied;
-import static com.phamhieu.bookapi.domain.book.BookError.supplyBookNotFoundById;
+import static com.phamhieu.bookapi.domain.book.BookError.supplyNotFound;
 import static com.phamhieu.bookapi.domain.book.BookValidation.validateBook;
 
 @Service
@@ -30,7 +30,7 @@ public class BookService {
 
     public Book findById(final UUID bookId) {
         return bookStore.findById(bookId)
-                .orElseThrow(supplyBookNotFoundById(bookId));
+                .orElseThrow(supplyNotFound("book", String.valueOf(bookId)));
     }
 
     public List<Book> find(final String inputKeyword) {

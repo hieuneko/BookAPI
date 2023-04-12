@@ -9,20 +9,5 @@
       "name": "spring.security.oauth2.registration.client-secret",
       "type": "java.lang.String",
       "description": "Description for spring.security.oauth2.registration.client-secret."
-    },
-    {
-      "name": "cloudinary.name",
-      "type": "java.lang.String",
-      "description": "Description for cloudinary.name."
-    },
-    {
-      "name": "cloudinary.key",
-      "type": "java.lang.String",
-      "description": "Description for cloudinary.key."
-    },
-    {
-      "name": "cloudinary.secret",
-      "type": "java.lang.String",
-      "description": "Description for cloudinary.secret."
     }
   ] }
