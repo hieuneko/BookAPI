@@ -3,6 +3,7 @@
 
 <head>
     <script src="https://apis.google.com/js/api.js?onload=onLibraryLoaded" async defer></script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
     <style>
         .container {
             height: 200px;
@@ -30,16 +31,29 @@
             margin: 4px 2px;
             cursor: pointer;
         }
+        .facebook-btn {
+            background-color: #619eff;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body>
 <div class="container">
     <div class="center">
-        <button class="google-btn" onclick="signIn()">Sign in with Google</button>
+        <button class="google-btn" onclick="signInGoogle()">Sign in with Google</button>
+        <button class="facebook-btn" onclick="signInFacebook()">Sign in with Facebook</button>
     </div>
 </div>
-<div id="email" style="text-align: center; margin-top:10%; font-size:30px"></div>
+<div id="profileName" style="text-align: center; margin-top:10%; font-size:30px"></div>
 <script>
     var auth2 = undefined;
 
@@ -54,16 +68,39 @@
         })
     }
 
-    function signIn() {
+    window.fbAsyncInit = function () {
+        FB.init({
+            appId: '245829367804247',
+            cookie: true,
+            xfbml: true,
+            version: 'v16.0'
+        });
+    };
+
+    function signInGoogle() {
         auth2.signIn().then(function(result) {
             console.log(result.zc.id_token);
-            callApi(result.zc.id_token);
+            callApiGoogle(result.zc.id_token);
         }, function(err) {
             console.log(err);
         })
     }
 
-    function callApi(token) {
+    function signInFacebook() {
+        FB.login((response) => {
+            statusChangeCallback(response);
+        }, {scope: 'public_profile,email'});
+    }
+
+    function statusChangeCallback(response) {
+        if (response.status === 'connected') {
+            callApiFacebook(response.authResponse.accessToken);
+        } else {
+            statusDiv.innerHTML = 'Please log into this app with Facebook.';
+        }
+    }
+
+    function callApiGoogle(token) {
         fetch("http://localhost:8080/api/v1/auths/google", {
             method: 'POST',
             body: JSON.stringify({
@@ -81,6 +118,28 @@
             })
     }
 
+    function callApiFacebook(token) {
+        FB.api(
+            '/me',
+            'GET',
+            function () {
+                fetch('/api/v1/auths/facebook', {
+                    method: 'POST',
+                    body: JSON.stringify({idToken: token}),
+                    headers: {'Content-Type': 'application/json'}
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        localStorage.setItem('jwtToken', data.token);
+                        getProfile(data.token);
+                    })
+                    .catch(error => {
+                        console.error("error", error);
+                    });
+            }
+        );
+    }
+
     function getProfile(jwtToken) {
         fetch('http://localhost:8080/api/v1/profiles', {
             method: 'GET',
@@ -96,12 +155,22 @@
             let userDetail = JSON.parse(localStorage.getItem('userDetail'));
             console.log(userDetail);
             if (userDetail == null) {
-                email.innerHTML = "Your account not belong to this website";
+                profileName.innerHTML = "Your account not belong to this website";
             } else {
-                email.innerHTML = "Hello user: " + userDetail.username;
+                profileName.innerHTML = "Hello user: " + userDetail.username;
             }
         })
     }
+    (function (d, s, id) {
+        let js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {
+            return;
+        }
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
 </script>
 </body>
 

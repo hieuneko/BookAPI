@@ -36,6 +36,10 @@ public class JWTWebSecurityConfig {
             "/api/v1/auths/google"
     };
 
+    private static final String[] FACEBOOK_LOGIN_RESOURCE = {
+            "/api/v1/auths/facebook"
+    };
+
     private final JwtTokenAuthorizationFilter jwtTokenAuthorizationFilter;
 
     @Bean
@@ -49,7 +53,8 @@ public class JWTWebSecurityConfig {
                 .ignoring()
                 .antMatchers(SWAGGER_RESOURCES)
                 .antMatchers(LOGIN_RESOURCE)
-                .antMatchers(GOOGLE_LOGIN_RESOURCE);
+                .antMatchers(GOOGLE_LOGIN_RESOURCE)
+                .antMatchers(FACEBOOK_LOGIN_RESOURCE);
     }
 
     @Bean
@@ -73,7 +78,7 @@ public class JWTWebSecurityConfig {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/v1/books/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/google").permitAll()
+                .antMatchers(HttpMethod.GET, "/login").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
