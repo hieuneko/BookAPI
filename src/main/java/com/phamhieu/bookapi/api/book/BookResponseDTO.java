@@ -18,5 +18,11 @@ public class BookResponseDTO {
     private Instant createdAt;
     private Instant updatedAt;
     private String image;
+    private String subtitle;
+    private String publisher;
+    private String isbn13;
+    private String price;
+    private Integer year;
+    private Double rating;
     private UUID userId;
 }

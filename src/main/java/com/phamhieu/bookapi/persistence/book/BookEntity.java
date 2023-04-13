@@ -1,6 +1,9 @@
 package com.phamhieu.bookapi.persistence.book;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -29,6 +32,18 @@ public class BookEntity {
     private Instant updatedAt;
 
     private String image;
+
+    private String subtitle;
+
+    private String publisher;
+
+    private String isbn13;
+
+    private String price;
+
+    private Integer year;
+
+    private Double rating;
 
     private UUID userId;
 }

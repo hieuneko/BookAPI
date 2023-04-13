@@ -24,5 +24,13 @@
       "name": "cloudinary.secret",
       "type": "java.lang.String",
       "description": "Description for cloudinary.secret."
+      "name": "integration.itbook.base-url",
+      "type": "java.lang.String",
+      "description": "Description for integration.itbook.base-url."
+    },
+    {
+      "name": "user-id-cron-job",
+      "type": "java.lang.String",
+      "description": "Description for user-id-cron-job."
     }
   ] }
