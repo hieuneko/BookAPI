@@ -3,6 +3,7 @@ package com.phamhieu.bookapi.domain.book;
 import com.phamhieu.bookapi.domain.auth.AuthsProvider;
 import com.phamhieu.bookapi.error.BadRequestException;
 import com.phamhieu.bookapi.error.DomainException;
+import com.phamhieu.bookapi.error.ForbiddenException;
 import com.phamhieu.bookapi.error.NotFoundException;
 import com.phamhieu.bookapi.persistence.book.BookStore;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -34,6 +37,9 @@ class BookServiceTest {
 
     @Mock
     private AuthsProvider authsProvider;
+
+    @Mock
+    private CloudinaryService cloudinaryService;
 
     @InjectMocks
     private BookService bookService;
@@ -184,12 +190,13 @@ class BookServiceTest {
         final var book = buildBook();
         final var updatedBook = buildBook();
         updatedBook.setId(book.getId());
+        final var user = buildContributor();
 
         when(bookStore.findById((book.getId()))).thenReturn(Optional.of(book));
         when(bookStore.update(book)).thenReturn(book);
-        when(authsProvider.getCurrentAuthentication()).thenReturn(buildContributor());
-        when(authsProvider.getCurrentUserId()).thenReturn(buildContributor().getUserId());
-        when(authsProvider.getCurrentRole()).thenReturn(buildContributor().getRole());
+        when(authsProvider.getCurrentAuthentication()).thenReturn(user);
+        when(authsProvider.getCurrentUserId()).thenReturn(user.getUserId());
+        when(authsProvider.getCurrentRole()).thenReturn(user.getRole());
 
         final var userAuthenticationToken = authsProvider.getCurrentAuthentication();
         updatedBook.setUserId(userAuthenticationToken.getUserId());
@@ -216,9 +223,10 @@ class BookServiceTest {
     void shouldUpdate_ThrowAccessRequired() {
         final var bookUpdate = buildBook();
         final var uuid = randomUUID();
+        final var user = buildContributor();
 
-        when(authsProvider.getCurrentUserId()).thenReturn(buildContributor().getUserId());
-        when(authsProvider.getCurrentRole()).thenReturn(buildContributor().getRole());
+        when(authsProvider.getCurrentUserId()).thenReturn(user.getUserId());
+        when(authsProvider.getCurrentRole()).thenReturn(user.getRole());
 
         assertThrows(DomainException.class, () -> bookService.update(uuid, bookUpdate));
     }
@@ -244,6 +252,79 @@ class BookServiceTest {
         when(authsProvider.getCurrentRole()).thenReturn(buildAdmin().getRole());
 
         assertThrows(BadRequestException.class, () -> bookService.update(id, expected));
+    }
+
+    @Test
+    void shouldUploadImageWithContributor_OK() throws IOException {
+        final var book = buildBook();
+        final var bookUpdate = buildBook();
+        bookUpdate.setId(book.getId());
+        final var user = buildContributor();
+        final var bytes = "abc".getBytes();
+
+        when(bookStore.findById(book.getId())).thenReturn(Optional.of(book));
+        when(authsProvider.getCurrentRole()).thenReturn(user.getRole());
+        when(authsProvider.getCurrentUserId()).thenReturn(user.getUserId());
+
+        book.setUserId(authsProvider.getCurrentUserId());
+        bookUpdate.setUserId(authsProvider.getCurrentUserId());
+
+        bookUpdate.setImage(cloudinaryService.upload(bytes));
+        bookUpdate.setCreatedAt(Instant.now());
+        bookService.uploadImage(bookUpdate.getId(), bytes);
+
+        verify(bookStore).findById(book.getId());
+    }
+
+    @Test
+    void shouldUploadImageWithAdmin_OK() throws IOException {
+        final var book = buildBook();
+        final var bookUpdate = buildBook();
+        bookUpdate.setId(book.getId());
+        bookUpdate.setUserId(book.getUserId());
+        final var bytes = "abc".getBytes();
+
+        when(bookStore.findById(book.getId())).thenReturn(Optional.of(book));
+        when(authsProvider.getCurrentRole()).thenReturn(buildAdmin().getRole());
+
+        bookUpdate.setImage(cloudinaryService.upload(bytes));
+        bookUpdate.setCreatedAt(Instant.now());
+        bookUpdate.setUserId(authsProvider.getCurrentUserId());
+        bookService.uploadImage(bookUpdate.getId(), bytes);
+
+        verify(bookStore).findById(book.getId());
+        verify(authsProvider).getCurrentRole();
+    }
+
+    @Test
+    void uploadImageWithContributor_shouldThrownForbiddenException() {
+        final var book = buildBook();
+        final var bytes = "abc".getBytes();
+        final var user = buildContributor();
+
+        when(bookStore.findById(book.getId())).thenReturn(Optional.of(book));
+        when(authsProvider.getCurrentRole()).thenReturn(user.getRole());
+        when(authsProvider.getCurrentUserId()).thenReturn(user.getUserId());
+
+        assertThrows(ForbiddenException.class, () -> bookService.uploadImage(book.getId(), bytes));
+
+        verify(bookStore).findById(book.getId());
+        verify(authsProvider).getCurrentRole();
+        verify(authsProvider).getCurrentUserId();
+        verify(bookStore, never()).update(book);
+    }
+
+    @Test
+    void shouldUploadImage_ThrownNotFound() {
+        final var book = buildBook();
+        final var bytes = "abc".getBytes();
+
+        when(bookStore.findById(book.getId())).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> bookService.uploadImage(book.getId(), bytes));
+
+        verify(bookStore).findById(book.getId());
+        verify(bookStore, never()).update(book);
     }
 
     @Test
@@ -278,11 +359,12 @@ class BookServiceTest {
     @Test
     void shouldDeleteByIdWithContributor_Ok() {
         final var book = buildBook();
+        final var user = buildContributor();
 
         when(bookStore.findById(book.getId())).thenReturn(Optional.of(book));
-        when(authsProvider.getCurrentAuthentication()).thenReturn(buildContributor());
-        when(authsProvider.getCurrentUserId()).thenReturn(buildContributor().getUserId());
-        when(authsProvider.getCurrentRole()).thenReturn(buildContributor().getRole());
+        when(authsProvider.getCurrentAuthentication()).thenReturn(user);
+        when(authsProvider.getCurrentUserId()).thenReturn(user.getUserId());
+        when(authsProvider.getCurrentRole()).thenReturn(user.getRole());
 
         final var userAuthenticationToken = authsProvider.getCurrentAuthentication();
         book.setUserId(userAuthenticationToken.getUserId());
@@ -294,10 +376,11 @@ class BookServiceTest {
     @Test
     void shouldDelete_ThrowAccessRequired() {
         final var book = buildBook();
+        final var user = buildContributor();
 
         when(bookStore.findById(book.getId())).thenReturn(Optional.of(book));
-        when(authsProvider.getCurrentUserId()).thenReturn(buildContributor().getUserId());
-        when(authsProvider.getCurrentRole()).thenReturn(buildContributor().getRole());
+        when(authsProvider.getCurrentUserId()).thenReturn(user.getUserId());
+        when(authsProvider.getCurrentRole()).thenReturn(user.getRole());
 
         assertThrows(DomainException.class, () -> bookService.delete(book.getId()));
         verify(bookStore).findById(book.getId());
